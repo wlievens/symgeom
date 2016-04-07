@@ -1,6 +1,8 @@
 package symgeom.value;
 
 import lombok.EqualsAndHashCode;
+import symgeom.linear.LinearExpression;
+import symgeom.linear.LinearExpressionBuilder;
 import symgeom.util.Util;
 
 @EqualsAndHashCode(callSuper = true)
@@ -80,20 +82,9 @@ public final class DivideValue extends AbstractBinaryValue
             }
         }
 
-        if (left instanceof MultiplyValue && false)
-        {
-            // (A*B)/C -> (A/C)*B  (if simpler)
-            Value a = ((MultiplyValue)left).getLeft();
-            Value b = ((MultiplyValue)left).getRight();
-            Value c = right;
-            Value result = a.divide(c).multiply(b);
-            if (result.getDepth() < getDepth())
-            {
-                return result;
-            }
-        }
+        LinearExpression expression = new LinearExpressionBuilder().build(this);
 
-        return create(left, right);
+        return expression.toValue();
     }
 
     @Override

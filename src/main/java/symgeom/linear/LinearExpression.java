@@ -54,4 +54,23 @@ public class LinearExpression
     {
         return new LinearExpression(ImmutableList.copyOf(terms));
     }
+
+    public Value toValue()
+    {
+        return toValue(terms);
+    }
+
+    private Value toValue(ImmutableList<LinearTerm> terms)
+    {
+        if (terms.isEmpty())
+        {
+            throw new IllegalArgumentException();
+        }
+        Value first = terms.get(0).toValue();
+        if (terms.size() == 1)
+        {
+            return first;
+        }
+        return first.add(toValue(terms.subList(1, terms.size())));
+    }
 }

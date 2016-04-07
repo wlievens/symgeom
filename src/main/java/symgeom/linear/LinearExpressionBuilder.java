@@ -1,6 +1,7 @@
 package symgeom.linear;
 
 import com.google.common.collect.ImmutableList;
+import symgeom.util.Util;
 import symgeom.value.AbstractBinaryValue;
 import symgeom.value.AddValue;
 import symgeom.value.DivideValue;
@@ -44,6 +45,25 @@ public class LinearExpressionBuilder
                 }
                 if (right.isInteger())
                 {
+                    if (left instanceof MultiplyValue)
+                    {
+                        MultiplyValue multiply = (MultiplyValue)left;
+                        if (multiply.getLeft().isInteger())
+                        {
+                            int a = multiply.getLeft().asInteger();
+                            int b = right.asInteger();
+                            int gcd = Util.gcd(a, b);
+                            a /= gcd;
+                            b /= gcd;
+                            if (b < 0)
+                            {
+                                a *= -1;
+                                b *= -1;
+                            }
+                            Value c = multiply.getRight();
+                            return LinearTerm.create(a, b, c);
+                        }
+                    }
                     return LinearTerm.create(1, right.asInteger(), left);
                 }
             }

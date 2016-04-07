@@ -44,4 +44,31 @@ public class LinearTerm
     {
         return new LinearTerm(numerator, denominator, Value.ONE);
     }
+
+    public Value toValue()
+    {
+        Value numerator = Value.number(this.numerator);
+        if (this.denominator == 1)
+        {
+            if (this.numerator == 1)
+            {
+                return value;
+            }
+            if (value.equals(Value.ONE))
+            {
+                return numerator;
+            }
+            return numerator.multiply(value);
+        }
+        Value denominator = Value.number(this.denominator);
+        if (this.numerator == 1)
+        {
+            return value.divide(denominator);
+        }
+        if (value.equals(Value.ONE))
+        {
+            return numerator.divide(denominator);
+        }
+        return numerator.divide(denominator).multiply(value);
+    }
 }

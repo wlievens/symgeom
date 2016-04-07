@@ -68,7 +68,7 @@ public final class MultiplyValue extends AbstractBinaryValue
             Value a = left;
             Value b = ((MultiplyValue)right).getLeft();
             Value c = ((MultiplyValue)right).getRight();
-            Value abc = a.multiply(b).multiply(c);
+            Value abc = a.multiply(b).multiply(c).simplify();
             if (abc.getDepth() < getDepth())
             {
                 return abc;

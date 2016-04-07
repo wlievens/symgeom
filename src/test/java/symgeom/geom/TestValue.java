@@ -117,6 +117,7 @@ public class TestValue
     public void test012()
     {
         Value value = Value.sqrt(number(2)).divide(number(2));
+        assertEquals("(DIVIDE (POWER 2 (DIVIDE 1 2)) 2)", value.toPrefix());
         assertEquals("sqrt(2) / 2", value.toString());
         assertEquals(0.707106781, value.approximate(), DELTA);
         assertEquals(Value.sqrt(number(2)).divide(number(2)), value.simplify());

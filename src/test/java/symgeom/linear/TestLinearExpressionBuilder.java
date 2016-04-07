@@ -1,6 +1,7 @@
 package symgeom.linear;
 
 import org.junit.Test;
+import symgeom.value.Value;
 
 import static org.junit.Assert.assertEquals;
 import static symgeom.value.Value.*;
@@ -61,5 +62,12 @@ public class TestLinearExpressionBuilder
     {
         LinearExpression expression = new LinearExpressionBuilder().build(PI.multiply(number(42)));
         assertEquals("Linear[42/1 {pi}]", expression.toString());
+    }
+
+    @Test
+    public void testBuild009()
+    {
+        LinearExpression expression = new LinearExpressionBuilder().build(Value.ONE.divide(Value.number(2)));
+        assertEquals("Linear[1/2 {1}]", expression.toString());
     }
 }
