@@ -35,7 +35,7 @@ public class TestValue
     @Test
     public void test003()
     {
-        Value value = number(42).divide(number(6));
+        Value value = number(42).divide(number(6)).simplify();
         assertEquals("7", value.toString());
         assertEquals(7.0, value.approximate(), DELTA);
         assertEquals(value, value.simplify());
@@ -89,7 +89,7 @@ public class TestValue
     @Test
     public void test009()
     {
-        Value value = number(42).add(number(9));
+        Value value = number(42).add(number(9)).simplify();
         assertEquals("51", value.toString());
         assertEquals(51.0, value.approximate(), DELTA);
         assertEquals(value, value.simplify());
@@ -107,7 +107,7 @@ public class TestValue
     @Test
     public void test011()
     {
-        Value value = number(342).divide(number(27));
+        Value value = number(342).divide(number(27)).simplify();
         assertEquals("38 / 3", value.toString());
         assertEquals(12.6666666666666, value.approximate(), DELTA);
         assertEquals(Value.fraction(38, 3), value.simplify());
@@ -152,7 +152,7 @@ public class TestValue
     @Test
     public void test017()
     {
-        Value value = number(42).power(Value.ZERO);
+        Value value = number(42).power(Value.ZERO).simplify();
         assertEquals("1", value.toString());
         assertEquals(1.0, value.approximate(), DELTA);
         assertEquals(Value.ONE, value.simplify());
@@ -161,7 +161,7 @@ public class TestValue
     @Test
     public void test018()
     {
-        Value value = number(42).power(Value.ONE);
+        Value value = number(42).power(Value.ONE).simplify();
         assertEquals("42", value.toString());
         assertEquals(42.0, value.approximate(), DELTA);
         assertEquals(number(42), value.simplify());
@@ -186,21 +186,21 @@ public class TestValue
     @Test
     public void test021()
     {
-        Value value = number(4).multiply(number(3).multiply(number(2).sqrt()));
+        Value value = number(4).multiply(number(3).multiply(number(2).sqrt())).simplify();
         assertEquals(number(12).multiply(number(2).sqrt()), value);
     }
 
     @Test
     public void test022()
     {
-        Value value = number(200).multiply(PI).divide(number(10));
+        Value value = number(200).multiply(PI).divide(number(10)).simplify();
         assertEquals(number(20).multiply(PI), value);
     }
 
     @Test
     public void test023()
     {
-        Value value = number(400).add(number(200).multiply(PI)).divide(number(30));
+        Value value = number(400).add(number(200).multiply(PI)).divide(number(30)).simplify();
         assertEquals(number(40).add(number(20).multiply(PI)).divide(number(3)), value);
     }
 }
