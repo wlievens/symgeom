@@ -13,7 +13,6 @@ public final class DivideValue extends AbstractBinaryValue
 
     public Value simplify()
     {
-        System.out.println("simplify " + this);
         Value left = getLeft().simplify();
         Value right = getRight().simplify();
         if (left.isInteger() && right.isInteger())
