@@ -3,7 +3,7 @@ package symgeom.value;
 public abstract class Value
 {
     public static final Value PI = PIValue.INSTANCE;
-    public static final Value E = PIValue.INSTANCE;
+    public static final Value E = EValue.INSTANCE;
     public static final Value ZERO = Value.number(0);
     public static final Value ONE = Value.number(1);
 
