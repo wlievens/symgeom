@@ -18,10 +18,10 @@ public class LinearExpressionBuilder
     {
         if (value instanceof AddValue)
         {
-            return ImmutableList.<LinearTerm> builder()
-                .addAll(buildTerms(((AddValue)value).getLeft()))
-                .addAll(buildTerms(((AddValue)value).getRight()))
-                .build();
+            return ImmutableList.<LinearTerm>builder()
+                    .addAll(buildTerms(((AddValue)value).getLeft()))
+                    .addAll(buildTerms(((AddValue)value).getRight()))
+                    .build();
         }
         return ImmutableList.of(buildTerm(value));
     }
@@ -40,7 +40,7 @@ public class LinearExpressionBuilder
                 }
                 if (left.isInteger())
                 {
-                    return LinearTerm.create(left.asInteger(), 1, right);
+                    return LinearTerm.create(left.asInteger(), 1, Value.ONE.divide(right));
                 }
                 if (right.isInteger())
                 {
@@ -61,6 +61,10 @@ public class LinearExpressionBuilder
                 if (right.isInteger())
                 {
                     return LinearTerm.create(right.asInteger(), 1, left);
+                }
+                if (left instanceof DivideValue && ((DivideValue)left).getLeft().isInteger() && ((DivideValue)left).getRight().isInteger())
+                {
+                    return LinearTerm.create(((DivideValue)left).getLeft().asInteger(), ((DivideValue)left).getRight().asInteger(), right);
                 }
             }
         }

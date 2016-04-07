@@ -60,6 +60,6 @@ public class TestLinearExpressionBuilder
     public void testBuild008()
     {
         LinearExpression expression = new LinearExpressionBuilder().build(PI.multiply(number(42)));
-        assertEquals("Linear[42/1 * {pi}]", expression.toString());
+        assertEquals("Linear[42/1 {pi}]", expression.toString());
     }
 }
