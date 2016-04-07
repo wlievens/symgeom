@@ -57,10 +57,6 @@ public final class DivideValue extends AbstractBinaryValue
 
             if (c.isInteger())
             {
-                System.out.println(a.toPrefix());
-                System.out.println(b.toPrefix());
-                System.out.println(c.toPrefix());
-
                 int cnum = c.asInteger();
                 for (int divisor = cnum / 2; divisor >= 2; divisor--)
                 {

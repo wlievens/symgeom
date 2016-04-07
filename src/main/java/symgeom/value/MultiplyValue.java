@@ -1,6 +1,8 @@
 package symgeom.value;
 
 import lombok.EqualsAndHashCode;
+import symgeom.linear.LinearExpression;
+import symgeom.linear.LinearExpressionBuilder;
 
 @EqualsAndHashCode(callSuper = true)
 public final class MultiplyValue extends AbstractBinaryValue
@@ -58,7 +60,6 @@ public final class MultiplyValue extends AbstractBinaryValue
             Value ac = a.multiply(c);
             Value bd = b.multiply(d);
 
-            System.out.println("DIV " + ac + "] / [" + bd);
             return ac.divide(bd);
         }
 
@@ -88,7 +89,11 @@ public final class MultiplyValue extends AbstractBinaryValue
             }
         }
 
-        return create(left, right);
+        LinearExpression expression = new LinearExpressionBuilder().build(this);
+
+        System.out.println(expression);
+
+        return expression.toValue();
     }
 
     @Override

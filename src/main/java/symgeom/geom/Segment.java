@@ -64,7 +64,9 @@ public class Segment
 
     public Point getMidpoint()
     {
-        return new Point(start.getX().add(end.getX()).divide(Value.number(2)).simplify(), start.getY().add(end.getY()).divide(Value.number(2)).simplify());
+        Value x = start.getX().add(end.getX()).divide(Value.number(2)).simplify();
+        Value y = start.getY().add(end.getY()).divide(Value.number(2)).simplify();
+        return new Point(x, y);
     }
 
     public Tribool contains(Point point)
@@ -91,11 +93,11 @@ public class Segment
 
     public Value getDeltaX()
     {
-        return end.getX().subtract(start.getX());
+        return end.getX().subtract(start.getX()).simplify();
     }
 
     public Value getDeltaY()
     {
-        return end.getY().subtract(start.getY());
+        return end.getY().subtract(start.getY()).simplify();
     }
 }

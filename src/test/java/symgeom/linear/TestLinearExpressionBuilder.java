@@ -70,4 +70,11 @@ public class TestLinearExpressionBuilder
         LinearExpression expression = new LinearExpressionBuilder().build(Value.ONE.divide(Value.number(2)));
         assertEquals("Linear[1/2 {1}]", expression.toString());
     }
+
+    @Test
+    public void testBuild010()
+    {
+        LinearExpression expression = new LinearExpressionBuilder().build(Value.PI.add(Value.E).divide(Value.number(3)));
+        assertEquals("Linear[1/3 {pi} + 1/3 {e}]", expression.toString());
+    }
 }

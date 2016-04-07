@@ -12,19 +12,31 @@ public class LinearExpressionBuilder
 {
     public LinearExpression build(Value value)
     {
-        return new LinearExpression(buildTerms(value));
+        return new LinearExpression(buildTerms(value, 1, 1));
     }
 
-    private ImmutableList<LinearTerm> buildTerms(Value value)
+    private ImmutableList<LinearTerm> buildTerms(Value value, int numerator, int denominator)
     {
-        if (value instanceof AddValue)
+        if (value instanceof AbstractBinaryValue)
         {
-            return ImmutableList.<LinearTerm>builder()
-                    .addAll(buildTerms(((AddValue)value).getLeft()))
-                    .addAll(buildTerms(((AddValue)value).getRight()))
-                    .build();
+            Value left = ((AbstractBinaryValue)value).getLeft();
+            Value right = ((AbstractBinaryValue)value).getRight();
+            if (value instanceof AddValue)
+            {
+                return ImmutableList.<LinearTerm>builder()
+                        .addAll(buildTerms(left, numerator, denominator))
+                        .addAll(buildTerms(right, numerator, denominator))
+                        .build();
+            }
+            if (value instanceof DivideValue)
+            {
+                if (right.isInteger())
+                {
+                    return buildTerms(left, 1, right.asInteger());
+                }
+            }
         }
-        return ImmutableList.of(buildTerm(value));
+        return ImmutableList.of(buildTerm(value).multiply(numerator, denominator));
     }
 
     private LinearTerm buildTerm(Value value)

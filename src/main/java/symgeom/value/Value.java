@@ -195,4 +195,9 @@ public abstract class Value
     {
         return PowerValue.create(value, fraction(1, 2));
     }
+
+    public final Tribool isOne()
+    {
+        return eq(ONE);
+    }
 }

@@ -72,11 +72,11 @@ public class Circle
         Value[] signs;
         if (determinantSign.isPositive())
         {
-            signs = new Value[] { Value.number(-1), Value.number(+1) };
+            signs = new Value[]{ Value.number(-1), Value.number(+1) };
         }
         else
         {
-            signs = new Value[] { Value.number(1) };
+            signs = new Value[]{ Value.number(1) };
         }
 
         List<Point> points = new LinkedList<>();

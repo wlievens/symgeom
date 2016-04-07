@@ -30,6 +30,10 @@ public final class PowerValue extends AbstractBinaryValue
         {
             return ZERO;
         }
+        if (left.isOne().isTrue())
+        {
+            return ONE;
+        }
         Value right = getRight().simplify();
         if (right.isZero().isTrue())
         {
@@ -100,6 +104,10 @@ public final class PowerValue extends AbstractBinaryValue
                     {
                         outside *= BigInteger.valueOf(base).pow(exp2).intValue();
                     }
+                }
+                if (inside == 1)
+                {
+                    return Value.number(outside);
                 }
                 if (outside > 1)
                 {

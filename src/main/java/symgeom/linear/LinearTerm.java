@@ -71,4 +71,10 @@ public class LinearTerm
         }
         return numerator.divide(denominator).multiply(value);
     }
+    
+    public LinearTerm multiply(int numerator, int denominator)
+    {
+        // TODO check overflow
+        return new LinearTerm(this.numerator * numerator, this.denominator * denominator, value);
+    }
 }

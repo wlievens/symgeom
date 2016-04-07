@@ -19,6 +19,6 @@ public class Point
     {
         Value dx = x.subtract(point.getX());
         Value dy = y.subtract(point.getY());
-        return Value.sqrt(dx.square().add(dy.square()));
+        return Value.sqrt(dx.square().add(dy.square())).simplify();
     }
 }
