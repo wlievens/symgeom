@@ -68,6 +68,18 @@ public final class SubtractValue extends AbstractBinaryValue
             return ad.subtract(cb).divide(bd).simplify();
         }
 
+        if (left instanceof AddValue)
+        {
+            // (A+B)-C --> (A-C)+B  [if simplier]
+            Value a = ((AddValue)left).getLeft();
+            Value b = ((AddValue)left).getRight();
+            Value c = right;
+            if (a.isInteger() && c.isInteger())
+            {
+                return a.subtract(c).simplify().add(b).simplify();
+            }
+        }
+
         return create(left, right);
     }
 

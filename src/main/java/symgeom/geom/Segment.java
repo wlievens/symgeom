@@ -35,8 +35,8 @@ public class Segment
             return Optional.empty();
         }
 
-        Value xi = x3.subtract(x4).multiply(x1.multiply(y2).subtract(y1.multiply(x2))).subtract(x1.subtract(x2).multiply(x3.multiply(y4).subtract(y3.multiply(x4)))).divide(d);
-        Value yi = y3.subtract(y4).multiply(x1.multiply(y2).subtract(y1.multiply(x2))).subtract(y1.subtract(y2).multiply(x3.multiply(y4).subtract(y3.multiply(x4)))).divide(d);
+        Value xi = x3.subtract(x4).multiply(x1.multiply(y2).subtract(y1.multiply(x2))).subtract(x1.subtract(x2).multiply(x3.multiply(y4).subtract(y3.multiply(x4)))).divide(d).simplify();
+        Value yi = y3.subtract(y4).multiply(x1.multiply(y2).subtract(y1.multiply(x2))).subtract(y1.subtract(y2).multiply(x3.multiply(y4).subtract(y3.multiply(x4)))).divide(d).simplify();
 
         Point intersection = new Point(xi, yi);
 

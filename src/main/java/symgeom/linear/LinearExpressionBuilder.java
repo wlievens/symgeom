@@ -1,10 +1,10 @@
 package symgeom.linear;
 
 import com.google.common.collect.ImmutableList;
-import symgeom.util.Util;
 import symgeom.value.AbstractBinaryValue;
 import symgeom.value.AddValue;
 import symgeom.value.DivideValue;
+import symgeom.value.IntegerValue;
 import symgeom.value.MultiplyValue;
 import symgeom.value.Value;
 
@@ -23,16 +23,21 @@ public class LinearExpressionBuilder
             Value right = ((AbstractBinaryValue)value).getRight();
             if (value instanceof AddValue)
             {
-                return ImmutableList.<LinearTerm>builder()
-                        .addAll(buildTerms(left, numerator, denominator))
-                        .addAll(buildTerms(right, numerator, denominator))
-                        .build();
+                return ImmutableList.<LinearTerm> builder()
+                    .addAll(buildTerms(left, numerator, denominator))
+                    .addAll(buildTerms(right, numerator, denominator))
+                    .build();
             }
             if (value instanceof DivideValue)
             {
+                if (left.isInteger() && right.isInteger())
+                {
+                    // TODO overflow
+                    return ImmutableList.of(LinearTerm.create(numerator * left.asInteger(), denominator * right.asInteger(), Value.ONE));
+                }
                 if (right.isInteger())
                 {
-                    return buildTerms(left, 1, right.asInteger());
+                    return buildTerms(left, numerator, denominator * right.asInteger());
                 }
             }
         }
@@ -64,14 +69,6 @@ public class LinearExpressionBuilder
                         {
                             int a = multiply.getLeft().asInteger();
                             int b = right.asInteger();
-                            int gcd = Util.gcd(a, b);
-                            a /= gcd;
-                            b /= gcd;
-                            if (b < 0)
-                            {
-                                a *= -1;
-                                b *= -1;
-                            }
                             Value c = multiply.getRight();
                             return LinearTerm.create(a, b, c);
                         }
@@ -99,6 +96,10 @@ public class LinearExpressionBuilder
                     return LinearTerm.create(((DivideValue)left).getLeft().asInteger(), ((DivideValue)left).getRight().asInteger(), right);
                 }
             }
+        }
+        if (value instanceof IntegerValue)
+        {
+            return LinearTerm.create(((IntegerValue)value).getValue(), 1, Value.ONE);
         }
         return LinearTerm.create(1, 1, value);
     }

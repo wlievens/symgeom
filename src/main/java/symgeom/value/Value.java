@@ -70,7 +70,12 @@ public abstract class Value
 
     public abstract double approximate();
 
-    public abstract Tribool eq(Value value);
+    public final Tribool eq(Value value)
+    {
+        return simplify().eqInternal(value);
+    }
+
+    public abstract Tribool eqInternal(Value value);
 
     public abstract Tribool lt(Value value);
 
@@ -120,6 +125,11 @@ public abstract class Value
         return lt(radius).invert();
     }
 
+    public final boolean isFraction()
+    {
+        return this instanceof DivideValue && ((DivideValue)this).getLeft().isInteger() && ((DivideValue)this).getRight().isInteger();
+    }
+
     public final Sign getSign()
     {
         Tribool b;
@@ -161,6 +171,11 @@ public abstract class Value
         return ((IntegerValue)this).getValue();
     }
 
+    public final Tribool isOne()
+    {
+        return eq(ONE);
+    }
+
     public static Value min(Value left, Value right)
     {
         return MinValue.create(left, right);
@@ -194,10 +209,5 @@ public abstract class Value
     public static Value sqrt(Value value)
     {
         return PowerValue.create(value, fraction(1, 2));
-    }
-
-    public final Tribool isOne()
-    {
-        return eq(ONE);
     }
 }

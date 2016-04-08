@@ -40,12 +40,12 @@ public final class IntegerValue extends Value
     }
 
     @Override
-    public Tribool eq(Value value)
+    public Tribool eqInternal(Value value)
     {
         Value other = value.simplify();
         if (other.isInteger())
         {
-            return this.value == other.asInteger() ? Tribool.TRUE : Tribool.FALSE;
+            return Tribool.of(this.value == other.asInteger());
         }
         return Tribool.UNKNOWN;
     }

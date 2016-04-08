@@ -33,25 +33,55 @@ public abstract class AbstractBinaryValue extends Value
     public String toExpression(int precedence)
     {
         BinaryOperator operator = getOperator();
-        boolean parentheses = precedence > operator.getPrecedence();
-        return String.format("%s%s %s %s%s", parentheses ? "(" : "", left.toExpression(operator.getPrecedence()), operator.getSymbol(), right.toExpression(operator.getPrecedence()), parentheses ? ")" : "");
+        boolean parentheses = operator.getPrecedence() <= precedence;
+        return String.format("%s%s %s %s%s",
+            parentheses ? "(" : "",
+            left.toExpression(operator.getPrecedence()),
+            operator.getSymbol(),
+            right.toExpression(operator.getPrecedence()),
+            parentheses ? ")" : ""
+        );
     }
 
     @Override
-    public Tribool eq(Value value)
+    public Tribool eqInternal(Value value)
     {
         Value other = value.simplify();
-        if (value.getClass() == this.getClass())
+        if (this instanceof AbstractBinaryValue && this.getClass() == other.getClass())
         {
-            AbstractBinaryValue binary = (AbstractBinaryValue)other;
-            if (this.left.eq(binary.left).isTrue() && this.right.eq(binary.right).isTrue())
+            AbstractBinaryValue bx = (AbstractBinaryValue)this;
+            AbstractBinaryValue by = (AbstractBinaryValue)other;
+            if (bx.left.eq(by.left).isTrue() && bx.right.eq(by.right).isTrue())
             {
                 return Tribool.TRUE;
             }
-            if (getOperator().isCommutative() && this.left.eq(binary.right).isTrue() && this.right.eq(binary.left).isTrue())
+            if (bx.getOperator().isCommutative() && bx.left.eq(by.right).isTrue() && bx.right.eq(by.left).isTrue())
             {
                 return Tribool.TRUE;
             }
+            if (bx instanceof DivideValue && by instanceof DivideValue)
+            {
+                // both are fractions
+                // A/B = C/D -> AD = BC
+                Value a = bx.left.simplify();
+                Value b = bx.right.simplify();
+                Value c = by.left.simplify();
+                Value d = by.right.simplify();
+                Value ad = a.multiply(d).simplify();
+                Value bc = b.multiply(c).simplify();
+                return ad.eq(bc);
+            }
+        }
+        if (this instanceof DivideValue && other instanceof IntegerValue)
+        {
+            // both are fractions
+            // A/B = C -> A = BC
+            AbstractBinaryValue bx = (AbstractBinaryValue)this;
+            Value a = bx.left.simplify();
+            Value b = bx.right.simplify();
+            Value c = other;
+            Value bc = b.multiply(c).simplify();
+            return a.eq(bc);
         }
         return Tribool.UNKNOWN;
     }
@@ -59,7 +89,8 @@ public abstract class AbstractBinaryValue extends Value
     @Override
     public Tribool lt(Value value)
     {
-        System.out.println("AbstractBinaryValue.lt [" + this + "] < " + value);
+        value = value.simplify();
+        System.out.println("No solution for AbstractBinaryValue.lt [" + this + "] < " + value);
         return Tribool.UNKNOWN;
     }
 
@@ -70,4 +101,5 @@ public abstract class AbstractBinaryValue extends Value
     }
 
     public abstract BinaryOperator getOperator();
+
 }

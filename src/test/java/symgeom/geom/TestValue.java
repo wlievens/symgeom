@@ -7,8 +7,7 @@ import symgeom.value.Value;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static symgeom.value.Value.PI;
-import static symgeom.value.Value.number;
+import static symgeom.value.Value.*;
 
 public class TestValue
 {
@@ -110,7 +109,7 @@ public class TestValue
         Value value = number(342).divide(number(27)).simplify();
         assertEquals("38 / 3", value.toString());
         assertEquals(12.6666666666666, value.approximate(), DELTA);
-        assertEquals(Value.fraction(38, 3), value.simplify());
+        assertEquals(fraction(38, 3), value.simplify());
     }
 
     @Test
@@ -203,5 +202,77 @@ public class TestValue
     {
         Value value = number(400).add(number(200).multiply(PI)).divide(number(30)).simplify();
         assertEquals(number(40).add(number(20).multiply(PI)).divide(number(3)), value);
+    }
+
+    @Test
+    public void test024()
+    {
+        Value value = number(42).multiply(PI.divide(E));
+        assertEquals(48.54054869, value.approximate(), DELTA);
+        assertEquals("42 * (pi / e)", value.toString());
+    }
+
+    @Test
+    public void test025()
+    {
+        Value value = number(42).divide(PI.multiply(E));
+        assertEquals(4.918185848, value.approximate(), DELTA);
+        assertEquals("42 / (pi * e)", value.toString());
+    }
+
+    @Test
+    public void test026()
+    {
+        Value value = number(320).divide(number(13).multiply(number(40))).simplify();
+        assertEquals(0.615384615, value.approximate(), DELTA);
+        assertEquals("8 / 13", value.toString());
+    }
+
+    @Test
+    public void test027()
+    {
+        Value value = number(2).sqrt().power(number(2)).simplify();
+        assertEquals(2.0, value.approximate(), DELTA);
+        assertEquals("2", value.toString());
+    }
+
+    @Test
+    public void test028()
+    {
+        Value value = number(50).multiply(number(2).sqrt()).power(number(2)).simplify();
+        assertEquals(5000.0, value.approximate(), DELTA);
+        assertEquals("5000", value.toString());
+    }
+
+    @Test
+    public void test029()
+    {
+        Value value = fraction(1, 2).multiply(number(2)).simplify();
+        assertEquals(1.0, value.approximate(), DELTA);
+        assertEquals("1", value.toString());
+    }
+
+    @Test
+    public void test030()
+    {
+        Value value = number(36).add(PI).subtract(number(40)).simplify();
+        assertEquals(-0.858407346, value.approximate(), DELTA);
+        assertEquals("-4 + pi", value.toString());
+    }
+
+    @Test
+    public void test031()
+    {
+        Value value = number(36).add(PI.subtract(number(40))).simplify();
+        assertEquals(-0.858407346, value.approximate(), DELTA);
+        assertEquals("-4 + pi", value.toString());
+    }
+
+    @Test
+    public void test032()
+    {
+        Value value = number(-4).add(number(-4).multiply(number(11).sqrt())).divide(number(40)).simplify();
+        assertEquals(-0.43166248, value.approximate(), DELTA);
+        assertEquals("-1 / 10 + (-1 / 10) * sqrt(11)", value.toString());
     }
 }

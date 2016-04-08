@@ -26,7 +26,7 @@ public abstract class AbstractConstantValue extends Value
     }
 
     @Override
-    public Tribool eq(Value value)
+    public Tribool eqInternal(Value value)
     {
         if (this.equals(value.simplify()))
         {

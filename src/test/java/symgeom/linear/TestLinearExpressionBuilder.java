@@ -67,14 +67,29 @@ public class TestLinearExpressionBuilder
     @Test
     public void testBuild009()
     {
-        LinearExpression expression = new LinearExpressionBuilder().build(Value.ONE.divide(Value.number(2)));
+        LinearExpression expression = new LinearExpressionBuilder().build(Value.ONE.divide(number(2)));
         assertEquals("Linear[1/2 {1}]", expression.toString());
     }
 
     @Test
     public void testBuild010()
     {
-        LinearExpression expression = new LinearExpressionBuilder().build(Value.PI.add(Value.E).divide(Value.number(3)));
+        LinearExpression expression = new LinearExpressionBuilder().build(PI.add(E).divide(number(3)));
         assertEquals("Linear[1/3 {pi} + 1/3 {e}]", expression.toString());
+    }
+
+    @Test
+    public void testBuild011()
+    {
+        LinearExpression expression = new LinearExpressionBuilder().build(number(320).divide(number(13).multiply(number(40))));
+        assertEquals("Linear[8/13 {1}]", expression.toString());
+    }
+
+    @Test
+    public void testBuild012()
+    {
+        Value input = number(72000).add(number(-8000).multiply(number(11).sqrt())).divide(number(2000));
+        LinearExpression expression = new LinearExpressionBuilder().build(input);
+        assertEquals("Linear[36/1 {1} + -4/1 {sqrt(11)}]", expression.toString());
     }
 }

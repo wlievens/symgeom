@@ -27,7 +27,7 @@ public abstract class AbstractUnaryValue extends Value
     }
 
     @Override
-    public Tribool eq(Value value)
+    public Tribool eqInternal(Value value)
     {
         Value other = value.simplify();
         if (value.getClass() == this.getClass())

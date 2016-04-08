@@ -44,6 +44,7 @@ public class TestCircle
     @Test
     public void testIntersection001()
     {
+        // No intersection
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(10, 20), new Point(80, 10));
         List<Point> intersections = circle.intersections(segment);
@@ -53,6 +54,7 @@ public class TestCircle
     @Test
     public void testIntersection002()
     {
+        // Horizontal segment that touches the circle, only one intersection point (tangent)
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(10, 30), new Point(80, 30));
         List<Point> intersections = circle.intersections(segment);
@@ -63,17 +65,19 @@ public class TestCircle
     @Test
     public void testIntersection003()
     {
+        // Intersection by segment with a descending slope
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(10, 20), new Point(80, 60));
         List<Point> intersections = circle.intersections(segment);
         assertEquals(2, intersections.size());
-        assertEquals("", intersections.get(0));
-        assertEquals("", intersections.get(1));
+        assertEquals("Point(x=38 - 14 * sqrt(7 / 13), y=36 - 8 * sqrt(7 / 13))", intersections.get(0).toString());
+        assertEquals("", intersections.get(1).toString());
     }
 
     @Test
     public void testIntersection004()
     {
+        // Intersection by segment with an ascending slope
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(10, 60), new Point(80, 10));
         List<Point> intersections = circle.intersections(segment);
@@ -85,6 +89,7 @@ public class TestCircle
     @Test
     public void testIntersection005()
     {
+        // Intersection by segment that starts inside the circle
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(40, 40), new Point(80, 60));
         List<Point> intersections = circle.intersections(segment);

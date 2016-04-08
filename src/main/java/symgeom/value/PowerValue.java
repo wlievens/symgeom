@@ -71,8 +71,8 @@ public final class PowerValue extends AbstractBinaryValue
             Value a = power.getLeft();
             Value b = power.getRight();
             Value c = right;
-            Value bc = b.multiply(c);
-            return create(a, bc);
+            Value bc = b.multiply(c).simplify();
+            return create(a, bc).simplify();
         }
         if (left.isInteger() && right.eq(fraction(1, 2)).isTrue())
         {
@@ -119,10 +119,10 @@ public final class PowerValue extends AbstractBinaryValue
         if (left instanceof MultiplyValue)
         {
             // (A*B)^C --> A^C*B^C  [if simpler]
-            Value a = ((MultiplyValue)left).getLeft();
-            Value b = ((MultiplyValue)left).getRight();
+            Value a = ((MultiplyValue)left).getLeft().simplify();
+            Value b = ((MultiplyValue)left).getRight().simplify();
             Value c = right;
-            Value result = a.power(c).multiply(b.power(c));
+            Value result = a.power(c).multiply(b.power(c)).simplify();
             if (result.getDepth() < getDepth())
             {
                 return result;

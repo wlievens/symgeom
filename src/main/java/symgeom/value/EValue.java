@@ -10,7 +10,7 @@ public class EValue extends AbstractConstantValue
 
     public double approximate()
     {
-        return Math.PI;
+        return Math.E;
     }
 
     public String getName()

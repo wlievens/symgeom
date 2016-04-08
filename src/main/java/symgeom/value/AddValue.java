@@ -24,6 +24,19 @@ public final class AddValue extends AbstractBinaryValue
             }
         }
 
+        if (left.isInteger() && right instanceof AddValue)
+        {
+            // A+(B+C) -> (A+B)+C  [if A and B integer]
+            Value a = left;
+            Value b = ((AddValue)right).getLeft();
+            Value c = ((AddValue)right).getRight();
+            Value ab = a.add(b).simplify();
+            if (ab.isInteger())
+            {
+                return ab.add(c).simplify();
+            }
+        }
+
         if (left instanceof DivideValue || right instanceof DivideValue)
         {
             // A/B + C/D --> (AD-CB)/BD
@@ -56,9 +69,9 @@ public final class AddValue extends AbstractBinaryValue
                 d = ONE;
             }
 
-            Value ad = a.multiply(d);
-            Value cb = c.multiply(b);
-            Value bd = b.multiply(d);
+            Value ad = a.multiply(d).simplify();
+            Value cb = c.multiply(b).simplify();
+            Value bd = b.multiply(d).simplify();
 
             return ad.add(cb).divide(bd).simplify();
         }
@@ -78,7 +91,38 @@ public final class AddValue extends AbstractBinaryValue
             return left.subtract(((NegateValue)right).getOperand());
         }
 
+        if (right instanceof SubtractValue)
+        {
+            // A+(B-C) -> (A-C)+B  [if simpler]
+            Value a = left;
+            Value b = ((SubtractValue)right).getLeft();
+            Value c = ((SubtractValue)right).getRight();
+            if (a.isInteger() && c.isInteger())
+            {
+                return a.subtract(c).simplify().add(b).simplify();
+            }
+        }
+
         return create(left, right);
+    }
+
+    @Override
+    public Tribool lt(Value value)
+    {
+        value = value.simplify();
+        if (value.isInteger())
+        {
+            if (getLeft().isInteger())
+            {
+                return getRight().lt(value.subtract(getLeft()).simplify());
+            }
+            if (getRight().isInteger())
+            {
+                return getLeft().lt(value.subtract(getRight()).simplify());
+            }
+        }
+
+        return super.lt(value);
     }
 
     @Override

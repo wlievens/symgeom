@@ -15,7 +15,26 @@ public final class MultiplyValue extends AbstractBinaryValue
     public Value simplify()
     {
         Value left = getLeft().simplify();
+        if (left.isZero().isTrue())
+        {
+            return ZERO;
+        }
+
         Value right = getRight().simplify();
+        if (right.isZero().isTrue())
+        {
+            return ZERO;
+        }
+
+        if (left.isOne().isTrue())
+        {
+            return right;
+        }
+        if (right.isOne().isTrue())
+        {
+            return left;
+        }
+
         if (left.isInteger() && right.isInteger())
         {
             long result = (long)left.asInteger() * (long)right.asInteger();
@@ -57,10 +76,10 @@ public final class MultiplyValue extends AbstractBinaryValue
                 d = ONE;
             }
 
-            Value ac = a.multiply(c);
-            Value bd = b.multiply(d);
+            Value ac = a.multiply(c).simplify();
+            Value bd = b.multiply(d).simplify();
 
-            return ac.divide(bd);
+            return ac.divide(bd).simplify();
         }
 
         if (right instanceof MultiplyValue)
@@ -90,28 +109,42 @@ public final class MultiplyValue extends AbstractBinaryValue
         }
 
         LinearExpression expression = new LinearExpressionBuilder().build(this);
-
-        System.out.println(expression);
-
         return expression.toValue();
     }
 
     @Override
     public Tribool lt(Value value)
     {
+        value = value.simplify();
+
+        Value left = getLeft();
+        Value right = getRight();
         if (value.isZero().isTrue())
         {
-            Sign left = getLeft().getSign();
-            Sign right = getRight().getSign();
-            if (left.isZero() || right.isZero())
+            Sign leftSign = left.getSign();
+            Sign rightSign = right.getSign();
+            if (leftSign.isZero() || rightSign.isZero())
             {
                 return Tribool.FALSE;
             }
-            if (left.isKnown() && right.isKnown())
+            if (leftSign.isKnown() && rightSign.isKnown())
             {
-                return Tribool.of(left.isPositive() != right.isPositive());
+                return Tribool.of(leftSign.isPositive() != rightSign.isPositive());
             }
         }
+
+        if (value.isInteger())
+        {
+            if (left.isInteger())
+            {
+                return right.simplify().lt(value.divide(left).simplify());
+            }
+            if (right.isInteger())
+            {
+                return left.simplify().lt(value.divide(right).simplify());
+            }
+        }
+
         return super.lt(value);
     }
 

@@ -56,7 +56,7 @@ public class Circle
         Value x2y1 = x2.multiply(y1);
         Value d = x1y2.subtract(x2y1);
 
-        Value determinant = radius.square().multiply(dr.square()).subtract(d.square());
+        Value determinant = radius.square().multiply(dr.square()).subtract(d.square()).simplify();
 
         Sign determinantSign = determinant.getSign();
 
@@ -72,23 +72,29 @@ public class Circle
         Value[] signs;
         if (determinantSign.isPositive())
         {
-            signs = new Value[]{ Value.number(-1), Value.number(+1) };
+            signs = new Value[] { Value.number(-1), Value.number(+1) };
         }
         else
         {
-            signs = new Value[]{ Value.number(1) };
+            signs = new Value[] { Value.number(1) };
         }
 
         List<Point> points = new LinkedList<>();
         for (Value factor : signs)
         {
-            Value ix = cx.add(d.multiply(dy).add(factor.multiply(dx).multiply(determinant.sqrt())).divide(dr.square()));
-            Value iy = cy.add(d.negate().multiply(dx).add(factor.multiply(dy.abs()).multiply(determinant.sqrt())).divide(dr.square()));
+            Value ix = cx.add(d.multiply(dy).add(factor.multiply(dx).multiply(determinant.sqrt())).divide(dr.square())).simplify();
+            Value iy = cy.add(d.negate().multiply(dx).add(factor.multiply(dy.abs()).multiply(determinant.sqrt())).divide(dr.square())).simplify();
 
-            System.out.println(ix);
-            System.out.println(iy);
-            System.out.println(ix.approximate() + ", " + iy.approximate());
-            points.add(new Point(ix, iy));
+            Point point = new Point(ix, iy);
+            Tribool contains = segment.contains(point);
+            if (contains.isUnknown())
+            {
+                throw new IllegalStateException(String.format("UNKNOWN: %s contains %s", segment, point));
+            }
+            if (contains.isTrue())
+            {
+                points.add(point);
+            }
         }
 
         return points;

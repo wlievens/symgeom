@@ -39,7 +39,7 @@ public final class DivideValue extends AbstractBinaryValue
         if (left instanceof DivideValue)
         {
             DivideValue divide = (DivideValue)left;
-            return create(divide.getLeft(), divide.getRight().multiply(right));
+            return create(divide.getLeft(), divide.getRight().multiply(right)).simplify();
         }
 
         if (right.isStrictlyNegative().isTrue())
@@ -62,12 +62,12 @@ public final class DivideValue extends AbstractBinaryValue
                 {
                     if (cnum % divisor == 0)
                     {
-                        Value adiv = a.divide(Value.number(divisor));
+                        Value adiv = a.divide(Value.number(divisor)).simplify();
                         if (adiv.getDepth() > a.getDepth())
                         {
                             continue;
                         }
-                        Value bdiv = b.divide(Value.number(divisor));
+                        Value bdiv = b.divide(Value.number(divisor)).simplify();
                         if (bdiv.getDepth() > b.getDepth())
                         {
                             continue;
@@ -78,15 +78,19 @@ public final class DivideValue extends AbstractBinaryValue
             }
         }
 
-        LinearExpression expression = new LinearExpressionBuilder().build(this);
+        if (left.isInteger() && right.isInteger())
+        {
+            return create(left, right);
+        }
 
+        LinearExpression expression = new LinearExpressionBuilder().build(this);
         return expression.toValue();
     }
 
     @Override
     public Tribool lt(Value value)
     {
-        return getLeft().lt(value.multiply(getRight()));
+        return getLeft().simplify().lt(value.multiply(getRight()).simplify());
     }
 
     @Override

@@ -21,6 +21,10 @@ public class LinearTerm
     public LinearTerm simplify()
     {
         int gcd = Util.gcd(this.numerator, this.denominator);
+        if (gcd == 1)
+        {
+            return this;
+        }
         int numerator = this.numerator / gcd;
         int denominator = this.denominator / gcd;
         if (denominator < 0)
@@ -28,21 +32,6 @@ public class LinearTerm
             return create(-numerator, -denominator, value);
         }
         return create(numerator, denominator, value);
-    }
-
-    public static LinearTerm create(Value value)
-    {
-        return create(1, 1, value);
-    }
-
-    public static LinearTerm create(int numerator, int denominator, Value value)
-    {
-        return new LinearTerm(numerator, denominator, value);
-    }
-
-    public static LinearTerm create(int numerator, int denominator)
-    {
-        return new LinearTerm(numerator, denominator, Value.ONE);
     }
 
     public Value toValue()
@@ -71,10 +60,25 @@ public class LinearTerm
         }
         return numerator.divide(denominator).multiply(value);
     }
-    
+
     public LinearTerm multiply(int numerator, int denominator)
     {
         // TODO check overflow
-        return new LinearTerm(this.numerator * numerator, this.denominator * denominator, value);
+        return create(this.numerator * numerator, this.denominator * denominator, value).simplify();
+    }
+
+    public static LinearTerm create(Value value)
+    {
+        return create(1, 1, value);
+    }
+
+    public static LinearTerm create(int numerator, int denominator, Value value)
+    {
+        return new LinearTerm(numerator, denominator, value).simplify();
+    }
+
+    public static LinearTerm create(int numerator, int denominator)
+    {
+        return create(numerator, denominator, Value.ONE);
     }
 }

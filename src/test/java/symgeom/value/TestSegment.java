@@ -14,7 +14,7 @@ public class TestSegment
     public void testGetLength()
     {
         Segment segment = new Segment(new Point(20, 30), new Point(50, 80));
-        assertEquals(Value.sqrt(Value.number(3400)), segment.getLength());
+        assertEquals(Value.number(10).multiply(Value.number(34).sqrt()), segment.getLength());
     }
 
     @Test
