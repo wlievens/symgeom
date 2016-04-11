@@ -117,8 +117,9 @@ public final class MultiplyValue extends AbstractBinaryValue
     {
         value = value.simplify();
 
-        Value left = getLeft();
-        Value right = getRight();
+        Value left = getLeft().simplify();
+        Value right = getRight().simplify();
+
         if (value.isZero().isTrue())
         {
             Sign leftSign = left.getSign();
@@ -135,11 +136,15 @@ public final class MultiplyValue extends AbstractBinaryValue
 
         if (value.isInteger())
         {
-            if (left.isInteger())
+            if (left.isInteger() || left.isFraction())
             {
-                return right.simplify().lt(value.divide(left).simplify());
+                // A*B < C -> B < C/A
+                Value a = left;
+                Value b = right;
+                Value c = value;
+                return b.lt(c.divide(a).simplify());
             }
-            if (right.isInteger())
+            if (right.isInteger() || right.isFraction())
             {
                 return left.simplify().lt(value.divide(right).simplify());
             }

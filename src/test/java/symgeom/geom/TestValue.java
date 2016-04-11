@@ -275,4 +275,12 @@ public class TestValue
         assertEquals(-0.43166248, value.approximate(), DELTA);
         assertEquals("-1 / 10 + (-1 / 10) * sqrt(11)", value.toString());
     }
+
+    @Test
+    public void test033()
+    {
+        Value value = number(-2).divide(number(-1).divide(number(13))).simplify();
+        assertEquals(26, value.approximate(), DELTA);
+        assertEquals("26", value.toString());
+    }
 }

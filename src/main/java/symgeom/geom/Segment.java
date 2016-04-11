@@ -71,22 +71,44 @@ public class Segment
 
     public Tribool contains(Point point)
     {
+        if (start.eq(point).isTrue() || end.eq(point).isTrue())
+        {
+            return Tribool.TRUE;
+        }
         Value x = point.getX();
         Value y = point.getY();
         Value x1 = start.getX();
         Value y1 = start.getY();
         Value x2 = end.getX();
         Value y2 = end.getY();
-        Value posX = x.subtract(x1).divide(x2.subtract(x1)).simplify();
-        Value posY = y.subtract(y1).divide(y2.subtract(y1)).simplify();
-        Tribool onLine = posX.eq(posY);
-        if (onLine.isFalse())
+        Value dx12 = getDeltaX();
+        Value dy12 = getDeltaY();
+        Value dx = x.subtract(x1).simplify();
+        Value dy = y.subtract(y1).simplify();
+        Tribool zeroX = dx12.isZero();
+        Tribool zeroY = dy12.isZero();
+        if (zeroX.isUnknown() || zeroY.isUnknown())
         {
-            return Tribool.FALSE;
+            return Tribool.UNKNOWN;
         }
+        if (zeroX.isTrue())
+        {
+            return dy.divide(dy12).simplify().between(Value.ZERO, Value.ONE);
+        }
+        if (zeroY.isTrue())
+        {
+            return dx.divide(dx12).simplify().between(Value.ZERO, Value.ONE);
+        }
+        Value posX = dx.divide(dx12).simplify();
+        Value posY = dy.divide(dy12).simplify();
+        Tribool onLine = posX.eq(posY);
         if (onLine.isUnknown())
         {
             return Tribool.UNKNOWN;
+        }
+        if (onLine.isFalse())
+        {
+            return Tribool.FALSE;
         }
         return posX.between(Value.ZERO, Value.ONE);
     }

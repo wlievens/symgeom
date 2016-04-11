@@ -21,7 +21,7 @@ public class LinearTerm
     public LinearTerm simplify()
     {
         int gcd = Util.gcd(this.numerator, this.denominator);
-        if (gcd == 1)
+        if (gcd == 1 && denominator > 0)
         {
             return this;
         }

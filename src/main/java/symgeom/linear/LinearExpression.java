@@ -26,6 +26,10 @@ public class LinearExpression
 
     public LinearExpression simplify()
     {
+        if (terms.size() == 1)
+        {
+            return create(terms.get(0).simplify());
+        }
         Set<Value> values = new LinkedHashSet<>();
         terms.stream().map(LinearTerm::getValue).forEach(values::add);
         List<LinearTerm> result = new ArrayList<>();
@@ -50,11 +54,6 @@ public class LinearExpression
         return new LinearExpression(ImmutableList.copyOf(result));
     }
 
-    public static LinearExpression create(LinearTerm... terms)
-    {
-        return new LinearExpression(ImmutableList.copyOf(terms));
-    }
-
     public Value toValue()
     {
         return toValue(terms);
@@ -72,5 +71,10 @@ public class LinearExpression
             return first;
         }
         return first.add(toValue(terms.subList(1, terms.size())));
+    }
+
+    public static LinearExpression create(LinearTerm... terms)
+    {
+        return new LinearExpression(ImmutableList.copyOf(terms));
     }
 }

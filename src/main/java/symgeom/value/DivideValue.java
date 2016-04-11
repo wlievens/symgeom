@@ -38,8 +38,20 @@ public final class DivideValue extends AbstractBinaryValue
 
         if (left instanceof DivideValue)
         {
-            DivideValue divide = (DivideValue)left;
-            return create(divide.getLeft(), divide.getRight().multiply(right)).simplify();
+            // (A/B)/C -> A/(B*C)
+            Value a = ((DivideValue)left).getLeft();
+            Value b = ((DivideValue)left).getRight();
+            Value c = right;
+            return create(a, b.multiply(c)).simplify();
+        }
+
+        if (right instanceof DivideValue)
+        {
+            // A/(B/C) -> (A*C)/B
+            Value a = left;
+            Value b = ((DivideValue)right).getLeft();
+            Value c = ((DivideValue)right).getRight();
+            return create(a.multiply(c), b).simplify();
         }
 
         if (right.isStrictlyNegative().isTrue())
