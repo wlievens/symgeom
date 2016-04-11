@@ -101,8 +101,8 @@ public class TestCircle
         List<Point> intersections = circle.intersections(segment);
         debug(circle, segment, intersections);
         assertEquals(2, intersections.size());
-        assertEquals("", intersections.get(0));
-        assertEquals("", intersections.get(1));
+        assertEquals("", intersections.get(0).toString());
+        assertEquals("", intersections.get(1).toString());
     }
 
     @Test
@@ -112,8 +112,9 @@ public class TestCircle
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(40, 40), new Point(80, 60));
         List<Point> intersections = circle.intersections(segment);
+        debug(circle, segment, intersections);
         assertEquals(1, intersections.size());
-        assertEquals("", intersections.get(0));
+        assertEquals("Point(x=30 + (6 + 4 * sqrt(11)), y=50 + (-12 + 2 * sqrt(11)))", intersections.get(0).toString());
     }
 
     private void debug(Circle circle, Segment segment, List<Point> points)

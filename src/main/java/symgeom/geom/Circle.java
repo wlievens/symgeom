@@ -57,9 +57,7 @@ public class Circle
         Value d = x1y2.subtract(x2y1);
 
         Value determinant = radius.square().multiply(dr.square()).subtract(d.square()).simplify();
-
         Sign determinantSign = determinant.getSign();
-
         if (determinantSign.isUnknown())
         {
             throw new IllegalStateException();
@@ -79,12 +77,18 @@ public class Circle
             signs = new Value[]{ Value.number(1) };
         }
 
+        Sign dySign = dy.getSign();
+        if (dySign.isUnknown())
+        {
+            throw new IllegalStateException();
+        }
+        int signX = dySign.isNegative() ? -1 : +1;
+
         List<Point> points = new LinkedList<>();
         for (Value factor : signs)
         {
-            Value ix = cx.add(d.multiply(dy).add(dy.sign().multiply(factor).multiply(dx).multiply(determinant.sqrt())).divide(dr.square())).simplify();
+            Value ix = cx.add(d.multiply(dy).add(factor.multiply(Value.number(signX)).multiply(dx).multiply(determinant.sqrt())).divide(dr.square())).simplify();
             Value iy = cy.add(d.negate().multiply(dx).add(factor.multiply(dy.abs()).multiply(determinant.sqrt())).divide(dr.square())).simplify();
-
             Point point = new Point(ix, iy);
             Tribool contains = segment.contains(point);
             if (contains.isUnknown())
