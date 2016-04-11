@@ -10,7 +10,7 @@ import java.util.function.Function;
 public enum UnaryOperator
 {
     NEGATE("-", false, x -> -x),
-    ABS("abs", false, Math::abs),
+    ABS("abs", true, Math::abs),
     COSINE("cos", true, Math::cos),
     SINE("sin", true, Math::sin);
 

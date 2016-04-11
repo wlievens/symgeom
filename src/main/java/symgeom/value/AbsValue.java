@@ -17,7 +17,28 @@ public final class AbsValue extends AbstractUnaryValue
         {
             return Value.number(Math.abs(operand.asInteger()));
         }
+        if (operand.isStrictlyPositive().isTrue())
+        {
+            return operand;
+        }
         return create(operand);
+    }
+
+    @Override
+    public Tribool lt(Value value)
+    {
+        // ABS(A) < B
+        Value b = value.simplify();
+        Sign bSign = b.getSign();
+        if (bSign.isZero())
+        {
+            return Tribool.FALSE;
+        }
+        if (bSign.isNegative())
+        {
+            return Tribool.FALSE;
+        }
+        return super.lt(value);
     }
 
     @Override

@@ -115,15 +115,15 @@ public final class MultiplyValue extends AbstractBinaryValue
     @Override
     public Tribool lt(Value value)
     {
-        value = value.simplify();
+        // A*B < C
+        Value a = getLeft().simplify();
+        Value b = getRight().simplify();
+        Value c = value.simplify();
 
-        Value left = getLeft().simplify();
-        Value right = getRight().simplify();
-
-        if (value.isZero().isTrue())
+        if (c.isZero().isTrue())
         {
-            Sign leftSign = left.getSign();
-            Sign rightSign = right.getSign();
+            Sign leftSign = a.getSign();
+            Sign rightSign = b.getSign();
             if (leftSign.isZero() || rightSign.isZero())
             {
                 return Tribool.FALSE;
@@ -134,23 +134,31 @@ public final class MultiplyValue extends AbstractBinaryValue
             }
         }
 
-        if (value.isInteger())
+        if (c.isInteger())
         {
-            if (left.isInteger() || left.isFraction())
+            if (a.isInteger() || a.isFraction())
             {
-                // A*B < C -> B < C/A
-                Value a = left;
-                Value b = right;
-                Value c = value;
-                return b.lt(c.divide(a).simplify());
+                // A*B < C  ->  B <?> C/A
+                Sign sign = a.getSign();
+                Value ca = c.divide(a).simplify();
+                if (sign.isPositive())
+                {
+                    // A*B < C  ->  B < C/A
+                    return b.lt(ca);
+                }
+                if (sign.isNegative())
+                {
+                    // A*B < C  ->  B > C/A
+                    return b.gt(ca);
+                }
             }
-            if (right.isInteger() || right.isFraction())
+            if (b.isInteger() || b.isFraction())
             {
-                return left.simplify().lt(value.divide(right).simplify());
+                return a.simplify().lt(c.divide(b).simplify());
             }
         }
 
-        return super.lt(value);
+        return super.lt(c);
     }
 
     @Override

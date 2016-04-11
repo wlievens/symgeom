@@ -135,16 +135,41 @@ public final class PowerValue extends AbstractBinaryValue
     @Override
     public Tribool lt(Value value)
     {
-        Value right = getRight().simplify();
-        if (right instanceof DivideValue)
+        // A^B < C
+        Value a = getLeft().simplify();
+        Value b = getRight().simplify();
+        Value c = value.simplify();
+        Sign cSign = c.getSign();
+        if (cSign.isZero())
         {
-            DivideValue divide = (DivideValue)right;
-            if (divide.getLeft().eq(Value.ONE).isTrue())
+            if (b.eq(fraction(1, 2)).isTrue())
             {
-                return getLeft().simplify().lt(value.power(divide.getRight()));
+                // SQRT(A) < 0  ->  [false if A > 0]
+                return a.gt(ZERO).invert();
             }
         }
-        return super.lt(value);
+        if (cSign.isNegative())
+        {
+            if (b.eq(fraction(1, 2)).isTrue())
+            {
+                // SQRT is never negative
+                return Tribool.FALSE;
+            }
+        }
+        if (b instanceof DivideValue)
+        {
+            // A^(D/E) < C
+            DivideValue divide = (DivideValue)b;
+            Value d = divide.getLeft();
+            Value e = divide.getRight();
+            if (cSign.isPositive() && d.eq(Value.ONE).isTrue())
+            {
+                // A^(1/E) < C  ->  A < C^E
+                Value ce = c.power(e).simplify();
+                return a.lt(ce);
+            }
+        }
+        return super.lt(c);
     }
 
     @Override

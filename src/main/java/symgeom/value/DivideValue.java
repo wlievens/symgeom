@@ -102,7 +102,21 @@ public final class DivideValue extends AbstractBinaryValue
     @Override
     public Tribool lt(Value value)
     {
-        return getLeft().simplify().lt(value.multiply(getRight()).simplify());
+        // A/B < C -> A <?> BC
+        Value a = getLeft().simplify();
+        Value b = getRight().simplify();
+        Value c = value;
+        Value bc = b.multiply(c).simplify();
+        Sign sign = b.getSign();
+        if (sign.isPositive())
+        {
+            return a.lt(bc);
+        }
+        if (sign.isNegative())
+        {
+            return bc.lt(a);
+        }
+        return super.lt(value);
     }
 
     @Override

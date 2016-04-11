@@ -35,11 +35,11 @@ public abstract class AbstractBinaryValue extends Value
         BinaryOperator operator = getOperator();
         boolean parentheses = operator.getPrecedence() <= precedence;
         return String.format("%s%s %s %s%s",
-            parentheses ? "(" : "",
-            left.toExpression(operator.getPrecedence()),
-            operator.getSymbol(),
-            right.toExpression(operator.getPrecedence()),
-            parentheses ? ")" : ""
+                parentheses ? "(" : "",
+                left.toExpression(operator.getPrecedence()),
+                operator.getSymbol(),
+                right.toExpression(operator.getPrecedence()),
+                parentheses ? ")" : ""
         );
     }
 

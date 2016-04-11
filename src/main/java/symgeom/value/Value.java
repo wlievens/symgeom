@@ -9,7 +9,11 @@ public abstract class Value
 
     public final String toString()
     {
-        return toExpression(0);
+        if (true)
+        {
+            return toExpression(0);
+        }
+        return toExpression(0) + " {" + approximate() + "}";
     }
 
     public abstract String toPrefix();

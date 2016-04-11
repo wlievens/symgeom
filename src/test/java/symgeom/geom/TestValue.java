@@ -283,4 +283,33 @@ public class TestValue
         assertEquals(26, value.approximate(), DELTA);
         assertEquals("26", value.toString());
     }
+
+    @Test
+    public void test034()
+    {
+        Value value = number(2).add(fraction(-1, 13).multiply(number(91).sqrt())).divide(number(5));
+        assertEquals(0.2532401228, value.approximate(), DELTA);
+        assertEquals(Tribool.FALSE, value.lt(Value.ZERO));
+        assertEquals(Tribool.TRUE, value.lt(Value.ONE));
+    }
+
+    @Test
+    public void test035()
+    {
+        Value value = number(2).sqrt();
+        assertEquals(Tribool.FALSE, value.isStrictlyNegative());
+    }
+
+    @Test
+    public void test036()
+    {
+        assertEquals(Tribool.FALSE, number(91).sqrt().lt(number(-39)));
+        assertEquals(Tribool.TRUE, number(-39).lt(number(91)));
+    }
+
+    @Test
+    public void test037()
+    {
+        assertEquals(Tribool.TRUE, number(91).sqrt().lt(number(26)));
+    }
 }

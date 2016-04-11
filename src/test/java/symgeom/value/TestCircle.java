@@ -1,16 +1,31 @@
 package symgeom.value;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import symgeom.geom.Circle;
 import symgeom.geom.Point;
 import symgeom.geom.Segment;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class TestCircle
 {
+    @Rule
+    public TestName name = new TestName();
+
     @Test
     public void testContains()
     {
@@ -63,15 +78,16 @@ public class TestCircle
     }
 
     @Test
-    public void testIntersection003()
+    public void testIntersection003() throws ParserConfigurationException, TransformerException
     {
         // Intersection by segment with a descending slope
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(10, 20), new Point(80, 60));
         List<Point> intersections = circle.intersections(segment);
+        debug(circle, segment, intersections);
         assertEquals(2, intersections.size());
-        assertEquals("Point(x=38 - 14 * sqrt(7 / 13), y=36 - 8 * sqrt(7 / 13))", intersections.get(0).toString());
-        assertEquals("", intersections.get(1).toString());
+        assertEquals("Point(x=30 + (8 + (-14 / 13) * sqrt(91)), y=50 + (-14 + (-8 / 13) * sqrt(91)))", intersections.get(0).toString());
+        assertEquals("Point(x=30 + (8 + (14 / 13) * sqrt(91)), y=50 + (-14 + (8 / 13) * sqrt(91)))", intersections.get(1).toString());
     }
 
     @Test
@@ -95,5 +111,73 @@ public class TestCircle
         List<Point> intersections = circle.intersections(segment);
         assertEquals(1, intersections.size());
         assertEquals("", intersections.get(0));
+    }
+
+    private void debug(Circle circle, Segment segment, List<Point> points) throws ParserConfigurationException, TransformerException
+    {
+        Document document = createSvgDocument(800, 800);
+        double scale = 8.0;
+        createSvgCircle(document, circle, scale);
+        createSvgSegment(document, segment, scale);
+        points.forEach(point -> createSvgPoint(document, point, scale));
+        File file = new File(getTestOutputPath(), "debug.svg");
+        saveDocument(document, file);
+    }
+
+    private void createSvgPoint(Document document, Point point, double scale)
+    {
+        Element svgCircle = document.createElement("circle");
+        svgCircle.setAttribute("cx", String.valueOf(scale * point.getX().approximate()));
+        svgCircle.setAttribute("cy", String.valueOf(scale * point.getY().approximate()));
+        svgCircle.setAttribute("r", String.valueOf(3.0));
+        svgCircle.setAttribute("style", "stroke-width: 1; stroke: red; fill: rgba(60,200,255,0.5);");
+        document.getDocumentElement().appendChild(svgCircle);
+    }
+
+    private void createSvgSegment(Document document, Segment segment, double scale)
+    {
+        Element svgLine = document.createElement("line");
+        svgLine.setAttribute("x1", String.valueOf(scale * segment.getStart().getX().approximate()));
+        svgLine.setAttribute("y1", String.valueOf(scale * segment.getStart().getY().approximate()));
+        svgLine.setAttribute("x2", String.valueOf(scale * segment.getEnd().getX().approximate()));
+        svgLine.setAttribute("y2", String.valueOf(scale * segment.getEnd().getY().approximate()));
+        svgLine.setAttribute("style", "stroke-width: 1; stroke: cyan; fill: none;");
+        document.getDocumentElement().appendChild(svgLine);
+    }
+
+    private void saveDocument(Document document, File file) throws TransformerException
+    {
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        StreamResult result = new StreamResult(file);
+        DOMSource source = new DOMSource(document);
+        transformer.transform(source, result);
+    }
+
+    private void createSvgCircle(Document document, Circle circle, double scale)
+    {
+        Element svgCircle = document.createElement("circle");
+        svgCircle.setAttribute("cx", String.valueOf(scale * circle.getCenter().getX().approximate()));
+        svgCircle.setAttribute("cy", String.valueOf(scale * circle.getCenter().getY().approximate()));
+        svgCircle.setAttribute("r", String.valueOf(scale * circle.getRadius().approximate()));
+        svgCircle.setAttribute("style", "stroke-width: 1; stroke: blue; fill: none;");
+        document.getDocumentElement().appendChild(svgCircle);
+    }
+
+    private Document createSvgDocument(int sx, int sy) throws ParserConfigurationException
+    {
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element svg = document.createElement("svg");
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        svg.setAttribute("width", String.valueOf(sx));
+        svg.setAttribute("height", String.valueOf(sy));
+        document.appendChild(svg);
+        return document;
+    }
+
+    private File getTestOutputPath()
+    {
+        File file = new File(String.format("target/test-output/%s/%s", getClass().getSimpleName(), name.getMethodName()));
+        file.mkdirs();
+        return file;
     }
 }
