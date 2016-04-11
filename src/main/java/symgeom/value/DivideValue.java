@@ -17,6 +17,7 @@ public final class DivideValue extends AbstractBinaryValue
     {
         Value left = getLeft().simplify();
         Value right = getRight().simplify();
+
         if (left.isInteger() && right.isInteger())
         {
             int num = left.asInteger();
@@ -34,6 +35,11 @@ public final class DivideValue extends AbstractBinaryValue
                 }
                 return fraction(num / gcd, den / gcd);
             }
+        }
+
+        if (left.eq(right).isTrue())
+        {
+            return ONE;
         }
 
         if (left instanceof DivideValue)

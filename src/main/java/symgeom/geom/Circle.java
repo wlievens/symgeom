@@ -72,17 +72,17 @@ public class Circle
         Value[] signs;
         if (determinantSign.isPositive())
         {
-            signs = new Value[] { Value.number(-1), Value.number(+1) };
+            signs = new Value[]{ Value.number(-1), Value.number(+1) };
         }
         else
         {
-            signs = new Value[] { Value.number(1) };
+            signs = new Value[]{ Value.number(1) };
         }
 
         List<Point> points = new LinkedList<>();
         for (Value factor : signs)
         {
-            Value ix = cx.add(d.multiply(dy).add(factor.multiply(dx).multiply(determinant.sqrt())).divide(dr.square())).simplify();
+            Value ix = cx.add(d.multiply(dy).add(dy.sign().multiply(factor).multiply(dx).multiply(determinant.sqrt())).divide(dr.square())).simplify();
             Value iy = cy.add(d.negate().multiply(dx).add(factor.multiply(dy.abs()).multiply(determinant.sqrt())).divide(dr.square())).simplify();
 
             Point point = new Point(ix, iy);

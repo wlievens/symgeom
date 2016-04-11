@@ -17,6 +17,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -78,7 +79,7 @@ public class TestCircle
     }
 
     @Test
-    public void testIntersection003() throws ParserConfigurationException, TransformerException
+    public void testIntersection003()
     {
         // Intersection by segment with a descending slope
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
@@ -96,7 +97,9 @@ public class TestCircle
         // Intersection by segment with an ascending slope
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(10, 60), new Point(80, 10));
+        debug(circle, segment, Collections.emptyList());
         List<Point> intersections = circle.intersections(segment);
+        debug(circle, segment, intersections);
         assertEquals(2, intersections.size());
         assertEquals("", intersections.get(0));
         assertEquals("", intersections.get(1));
@@ -113,15 +116,22 @@ public class TestCircle
         assertEquals("", intersections.get(0));
     }
 
-    private void debug(Circle circle, Segment segment, List<Point> points) throws ParserConfigurationException, TransformerException
+    private void debug(Circle circle, Segment segment, List<Point> points)
     {
-        Document document = createSvgDocument(800, 800);
-        double scale = 8.0;
-        createSvgCircle(document, circle, scale);
-        createSvgSegment(document, segment, scale);
-        points.forEach(point -> createSvgPoint(document, point, scale));
-        File file = new File(getTestOutputPath(), "debug.svg");
-        saveDocument(document, file);
+        try
+        {
+            Document document = createSvgDocument(800, 800);
+            double scale = 8.0;
+            createSvgCircle(document, circle, scale);
+            createSvgSegment(document, segment, scale);
+            points.forEach(point -> createSvgPoint(document, point, scale));
+            File file = new File(getTestOutputPath(), "debug.svg");
+            saveDocument(document, file);
+        }
+        catch (TransformerException | ParserConfigurationException e)
+        {
+            throw new IllegalStateException(e);
+        }
     }
 
     private void createSvgPoint(Document document, Point point, double scale)

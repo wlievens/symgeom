@@ -11,6 +11,7 @@ public enum UnaryOperator
 {
     NEGATE("-", false, x -> -x),
     ABS("abs", true, Math::abs),
+    SIGN("sign", true, Math::signum),
     COSINE("cos", true, Math::cos),
     SINE("sin", true, Math::sin);
 

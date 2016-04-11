@@ -68,6 +68,11 @@ public abstract class Value
         return MultiplyValue.create(this, value);
     }
 
+    public final Value sign()
+    {
+        return SignValue.create(this);
+    }
+
     public abstract String toExpression(int precedence);
 
     public abstract Value simplify();
