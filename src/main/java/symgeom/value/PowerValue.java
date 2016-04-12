@@ -45,7 +45,7 @@ public final class PowerValue extends AbstractBinaryValue
         {
             if (right.asInteger() == 0)
             {
-                return number(1);
+                return ONE;
             }
             if (right.asInteger() == 1)
             {

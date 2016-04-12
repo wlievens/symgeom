@@ -239,7 +239,8 @@ public class TestValue
     @Test
     public void test028()
     {
-        Value value = number(50).multiply(number(2).sqrt()).power(number(2)).simplify();
+        Value value = number(50).multiply(number(2).sqrt()).power(number(2));
+        value = value.simplify();
         assertEquals(5000.0, value.approximate(), DELTA);
         assertEquals("5000", value.toString());
     }
@@ -344,5 +345,37 @@ public class TestValue
         System.out.println(x);
         System.out.println(y);
         assertEquals(Tribool.TRUE, x.eq(y));
+    }
+
+    @Test
+    public void test042()
+    {
+        Value x = (number(19).add(number(287).sqrt())).divide(number(74));
+        Value y = fraction(19, 74).add((number(287).sqrt().divide(number(74))));
+        System.out.println(x);
+        System.out.println(y);
+        assertEquals(Tribool.TRUE, x.eq(y));
+    }
+
+    @Test
+    public void test043()
+    {
+        Value input = fraction(19, 74).add(number(287).sqrt().divide(number(74)));
+        assertEquals(Tribool.FALSE, input.lt(ZERO));
+        assertEquals(Tribool.TRUE, input.lt(ONE));
+    }
+
+    @Test
+    public void test044()
+    {
+        Value input = number(-1).multiply(PI);
+        assertEquals(PI.negate(), input.simplify());
+    }
+
+    @Test
+    public void test045()
+    {
+        Value value = number(50).multiply(number(2).sqrt());
+        assertEquals(Tribool.FALSE, value.isStrictlyNegative());
     }
 }

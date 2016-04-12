@@ -49,6 +49,10 @@ public abstract class AbstractBinaryValue extends Value
     public Tribool eqInternal(Value value)
     {
         value = value.simplify();
+        if (this.equals(value))
+        {
+            return Tribool.TRUE;
+        }
         if (this instanceof AbstractBinaryValue && this.getClass() == value.getClass())
         {
             AbstractBinaryValue bx = (AbstractBinaryValue)this;
@@ -73,22 +77,6 @@ public abstract class AbstractBinaryValue extends Value
                 Value bc = b.multiply(c).simplify();
                 return ad.eq(bc);
             }
-            if (bx instanceof AddValue && by instanceof AddValue)
-            {
-                LinearExpressionBuilder builder = new LinearExpressionBuilder();
-                LinearExpression expression1 = builder.build(bx);
-                LinearExpression expression2 = builder.build(by);
-                System.out.println("bx: " + bx);
-                System.out.println("expression1: " + expression1);
-                System.out.println("expression1 approximate: " + expression1.toValue().approximate());
-                System.out.println("by: " + by);
-                System.out.println("expression2: " + expression2);
-                System.out.println("expression2 approximate: " + expression2.toValue().approximate());
-                if (expression1.equals(expression2))
-                {
-                    return Tribool.TRUE;
-                }
-            }
         }
         if (this instanceof DivideValue && value instanceof IntegerValue)
         {
@@ -101,6 +89,15 @@ public abstract class AbstractBinaryValue extends Value
             Value bc = b.multiply(c).simplify();
             return a.eq(bc);
         }
+
+        LinearExpressionBuilder builder = new LinearExpressionBuilder();
+        LinearExpression expression1 = builder.build(this);
+        LinearExpression expression2 = builder.build(value);
+        if (expression1.equals(expression2))
+        {
+            return Tribool.TRUE;
+        }
+
         return Tribool.UNKNOWN;
     }
 

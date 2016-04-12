@@ -74,6 +74,8 @@ public class TestCircle
         Circle circle = new Circle(new Point(30, 50), Value.number(20));
         Segment segment = new Segment(new Point(10, 30), new Point(80, 30));
         List<Point> intersections = circle.intersections(segment);
+        System.out.println(intersections);
+        debug(circle, segment, intersections);
         assertEquals(1, intersections.size());
         assertEquals(new Point(30, 30), intersections.get(0));
     }

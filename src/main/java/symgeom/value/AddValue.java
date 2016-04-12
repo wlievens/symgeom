@@ -127,6 +127,23 @@ public final class AddValue extends AbstractBinaryValue
                 // A+B < C  ->  A < C-B
                 return a.lt(c.subtract(b).simplify());
             }
+            if (a.isFraction())
+            {
+                // A+B < C  ->  B < C-A
+                Value ca = c.subtract(a).simplify();
+                return b.lt(ca);
+            }
+            if (b.isFraction())
+            {
+                // A+B < C  ->  A < C-B
+                return a.lt(c.subtract(b).simplify());
+            }
+        }
+
+        if (value.isZero().isTrue())
+        {
+            // A+B < 0  -> A < -B
+            return getLeft().simplify().lt(getRight().negate().simplify());
         }
 
         return super.lt(value);

@@ -74,7 +74,7 @@ public class Circle
         }
         else
         {
-            signs = new Value[] { Value.number(1) };
+            signs = new Value[] { Value.ONE };
         }
 
         Sign dySign = dy.getSign();
@@ -89,8 +89,6 @@ public class Circle
         {
             Value ix = cx.add(d.multiply(dy).add(factor.multiply(Value.number(signX)).multiply(dx).multiply(discriminant.sqrt())).divide(dr.square())).simplify();
             Value iy = cy.add(d.negate().multiply(dx).add(factor.multiply(dy.abs()).multiply(discriminant.sqrt())).divide(dr.square())).simplify();
-            System.out.println(ix);
-            System.out.println(iy);
             Point point = new Point(ix, iy);
             Tribool contains = segment.contains(point);
             if (contains.isUnknown())

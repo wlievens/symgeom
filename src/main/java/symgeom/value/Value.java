@@ -90,6 +90,7 @@ public abstract class Value
 
     public final Tribool gt(Value value)
     {
+        // Do not replace this with 'lt(value).invert()' as that is not the same for the ZERO case!
         return value.lt(this);
     }
 

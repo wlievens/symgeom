@@ -34,6 +34,14 @@ public final class MultiplyValue extends AbstractBinaryValue
         {
             return left;
         }
+        if (left.equals(number(-1)))
+        {
+            return right.negate().simplify();
+        }
+        if (right.equals(number(-1)))
+        {
+            return left.negate().simplify();
+        }
 
         if (left.isInteger() && right.isInteger())
         {

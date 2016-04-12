@@ -43,6 +43,10 @@ public class LinearTerm
             {
                 return value;
             }
+            if (this.numerator == -1)
+            {
+                return value.negate().simplify();
+            }
             if (value.equals(Value.ONE))
             {
                 return numerator;

@@ -101,7 +101,8 @@ public class Segment
         }
         Value posX = dx.divide(dx12).simplify();
         Value posY = dy.divide(dy12).simplify();
-        System.out.println(posY.toPrefix());
+        System.out.println("posX: " + posX);
+        System.out.println("posY: " + posY);
         Tribool onLine = posX.eq(posY);
         if (onLine.isUnknown())
         {

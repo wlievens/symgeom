@@ -51,14 +51,38 @@ public final class IntegerValue extends Value
     }
 
     @Override
-    public Tribool lt(Value other)
+    public Tribool lt(Value value)
     {
-        Value value = other.simplify();
+        value = value.simplify();
         if (value.isInteger())
         {
             return Tribool.of(this.value < value.asInteger());
         }
-        return other.lt(this).invert();
+        Sign sign = value.getSign();
+        switch (sign)
+        {
+            case ZERO:
+            {
+                return Tribool.of(this.value == 0);
+            }
+            case NEGATIVE:
+            {
+                if (this.value >= 0)
+                {
+                    return Tribool.FALSE;
+                }
+                break;
+            }
+            case POSITIVE:
+            {
+                if (this.value <= 0)
+                {
+                    return Tribool.TRUE;
+                }
+                break;
+            }
+        }
+        return value.lt(this).invert();
     }
 
     public static Value create(int value)
