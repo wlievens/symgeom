@@ -29,7 +29,7 @@ public abstract class AbstractBinaryValue extends Value
     @Override
     public String toPrefix()
     {
-        return String.format("(%s %s %s)", getOperator().name(), left.toPrefix(), right.toPrefix());
+        return String.format("(%s %s %s)", getOperator().getSymbol(), left.toPrefix(), right.toPrefix());
     }
 
     public String toExpression(int precedence)

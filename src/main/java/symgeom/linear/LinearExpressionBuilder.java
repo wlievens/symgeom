@@ -6,6 +6,8 @@ import symgeom.value.AddValue;
 import symgeom.value.DivideValue;
 import symgeom.value.IntegerValue;
 import symgeom.value.MultiplyValue;
+import symgeom.value.NegateValue;
+import symgeom.value.SubtractValue;
 import symgeom.value.Value;
 
 public class LinearExpressionBuilder
@@ -28,6 +30,13 @@ public class LinearExpressionBuilder
                         .addAll(buildTerms(right, numerator, denominator))
                         .build();
             }
+            if (value instanceof SubtractValue)
+            {
+                return ImmutableList.<LinearTerm>builder()
+                        .addAll(buildTerms(left, numerator, denominator))
+                        .addAll(buildTerms(right, -numerator, denominator))
+                        .build();
+            }
             if (value instanceof DivideValue)
             {
                 if (left.isInteger() && right.isInteger())
@@ -47,6 +56,10 @@ public class LinearExpressionBuilder
                     return buildTerms(right, numerator * left.asInteger(), denominator);
                 }
             }
+        }
+        if (value instanceof NegateValue)
+        {
+            return buildTerms(((NegateValue)value).getOperand(), -numerator, denominator);
         }
         return ImmutableList.of(buildTerm(value).multiply(numerator, denominator));
     }

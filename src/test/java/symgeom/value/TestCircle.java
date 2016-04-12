@@ -88,8 +88,8 @@ public class TestCircle
         debug(circle, segment, intersections);
         assertEquals(2, intersections.size());
         System.out.println(intersections);
-        assertEquals("Point(x=30 + (8 + (-14 / 13) * sqrt(91)), y=50 + (-14 + (-8 / 13) * sqrt(91)))", intersections.get(0).toString());
-        assertEquals("Point(x=30 + (8 + (14 / 13) * sqrt(91)), y=50 + (-14 + (8 / 13) * sqrt(91)))", intersections.get(1).toString());
+        assertEquals("Point(x=38 + (-14 / 13) * sqrt(91), y=36 + (-8 / 13) * sqrt(91))", intersections.get(0).toString());
+        assertEquals("Point(x=38 + (14 / 13) * sqrt(91), y=36 + (8 / 13) * sqrt(91))", intersections.get(1).toString());
     }
 
     @Test
@@ -115,7 +115,7 @@ public class TestCircle
         List<Point> intersections = circle.intersections(segment);
         debug(circle, segment, intersections);
         assertEquals(1, intersections.size());
-        assertEquals("Point(x=30 + (6 + 4 * sqrt(11)), y=50 + (-12 + 2 * sqrt(11)))", intersections.get(0).toString());
+        assertEquals("Point(x=36 + 4 * sqrt(11), y=38 + 2 * sqrt(11))", intersections.get(0).toString());
     }
 
     private void debug(Circle circle, Segment segment, List<Point> points)

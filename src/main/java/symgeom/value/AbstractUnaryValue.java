@@ -23,7 +23,7 @@ public abstract class AbstractUnaryValue extends Value
     @Override
     public String toPrefix()
     {
-        return String.format("(%s %s)", getOperator().name(), operand.toPrefix());
+        return String.format("(%s %s)", getOperator().getSymbol(), operand.toPrefix());
     }
 
     @Override

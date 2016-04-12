@@ -108,4 +108,20 @@ public class TestLinearExpressionBuilder
         LinearExpression expression = new LinearExpressionBuilder().build(input);
         assertEquals("Linear[665/37 {1} + 35/37 {sqrt(287)}]", expression.toString());
     }
+
+    @Test
+    public void testBuild015()
+    {
+        Value input = number(50).multiply(((number(1035).divide(number(37)).add((number(35).divide(number(37)).multiply(number(287).sqrt()))).subtract(number(10)))));
+        LinearExpression expression = new LinearExpressionBuilder().build(input);
+        assertEquals("Linear[33250/37 {1} + 1750/37 {sqrt(287)}]", expression.toString());
+    }
+
+    @Test
+    public void testBuild016()
+    {
+        Value input = number(50).multiply(((number(1035).divide(number(37)).add((number(35).divide(number(37)).multiply(number(287).sqrt()))).subtract(number(10))))).negate();
+        LinearExpression expression = new LinearExpressionBuilder().build(input);
+        assertEquals("Linear[-33250/37 {1} + -1750/37 {sqrt(287)}]", expression.toString());
+    }
 }

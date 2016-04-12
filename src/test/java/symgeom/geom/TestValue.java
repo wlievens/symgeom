@@ -116,7 +116,7 @@ public class TestValue
     public void test012()
     {
         Value value = Value.sqrt(number(2)).divide(number(2));
-        assertEquals("(DIVIDE (POWER 2 (DIVIDE 1 2)) 2)", value.toPrefix());
+        assertEquals("(/ (^ 2 (/ 1 2)) 2)", value.toPrefix());
         assertEquals("sqrt(2) / 2", value.toString());
         assertEquals(0.707106781, value.approximate(), DELTA);
         assertEquals(Value.sqrt(number(2)).divide(number(2)), value.simplify());
@@ -318,10 +318,6 @@ public class TestValue
     {
         Value x = number(4).add(number(-15).divide(number(37)).add(number(7).divide(number(37)).multiply(number(287).sqrt()))).divide(number(14));
         Value y = number(10).add(number(105).divide(number(37)).add(number(25).divide(number(37)).multiply(number(287).sqrt()))).divide(number(50));
-        System.out.println("X: " + x);
-        System.out.println("Y: " + y);
-        System.out.println("X simplified: " + x.simplify());
-        System.out.println("Y simplified: " + y.simplify());
         assertEquals(Tribool.TRUE, x.eq(y));
     }
 
@@ -337,11 +333,16 @@ public class TestValue
     {
         Value x = number(10).multiply(number(2).add(number(-15).divide(number(74)).add(number(7).divide(number(74)).multiply(number(287).sqrt()))));
         Value y = number(7).multiply(number(2).add(number(21).divide(number(37)).add(number(5).divide(number(37)).multiply(number(287).sqrt()))));
-        System.out.println("X: " + x);
-        System.out.println("Y: " + y);
-        System.out.println("X simplified: " + x.simplify());
-        System.out.println("Y simplified: " + y.simplify());
         assertEquals(Tribool.TRUE, x.eq(y));
     }
 
+    @Test
+    public void test041()
+    {
+        Value x = ((number(1035).divide(number(37)).add((number(35).divide(number(37)).multiply(number(287).sqrt()))).subtract(number(10)))).divide(number(70));
+        Value y = ((number(1745).divide(number(37)).add((number(-25).divide(number(37)).multiply(number(287).sqrt()))).subtract(number(60)))).negate().divide(number(50));
+        System.out.println(x);
+        System.out.println(y);
+        assertEquals(Tribool.TRUE, x.eq(y));
+    }
 }
