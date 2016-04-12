@@ -312,4 +312,12 @@ public class TestValue
     {
         assertEquals(Tribool.TRUE, number(91).sqrt().lt(number(26)));
     }
+
+    @Test
+    public void test038()
+    {
+        //posX = {DivideValue@1261} "(4 + (-15 / 37 + (7 / 37) * sqrt(287))) / 14"
+        //posY = {DivideValue@1262} "--10 + (-105 / 37 + (-25 / 37) * sqrt(287)) / 50"
+        //assertEquals(Tribool.)
+    }
 }

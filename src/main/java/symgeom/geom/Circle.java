@@ -54,27 +54,27 @@ public class Circle
 
         Value x1y2 = x1.multiply(y2);
         Value x2y1 = x2.multiply(y1);
-        Value d = x1y2.subtract(x2y1);
+        Value d = x1y2.subtract(x2y1).simplify();
 
-        Value determinant = radius.square().multiply(dr.square()).subtract(d.square()).simplify();
-        Sign determinantSign = determinant.getSign();
-        if (determinantSign.isUnknown())
+        Value discriminant = radius.square().multiply(dr.square()).subtract(d.square()).simplify();
+        Sign discriminantSign = discriminant.getSign();
+        if (discriminantSign.isUnknown())
         {
             throw new IllegalStateException();
         }
-        if (determinantSign.isNegative())
+        if (discriminantSign.isNegative())
         {
             return Collections.emptyList();
         }
 
         Value[] signs;
-        if (determinantSign.isPositive())
+        if (discriminantSign.isPositive())
         {
-            signs = new Value[]{ Value.number(-1), Value.number(+1) };
+            signs = new Value[] { Value.number(-1), Value.number(+1) };
         }
         else
         {
-            signs = new Value[]{ Value.number(1) };
+            signs = new Value[] { Value.number(1) };
         }
 
         Sign dySign = dy.getSign();
@@ -87,8 +87,10 @@ public class Circle
         List<Point> points = new LinkedList<>();
         for (Value factor : signs)
         {
-            Value ix = cx.add(d.multiply(dy).add(factor.multiply(Value.number(signX)).multiply(dx).multiply(determinant.sqrt())).divide(dr.square())).simplify();
-            Value iy = cy.add(d.negate().multiply(dx).add(factor.multiply(dy.abs()).multiply(determinant.sqrt())).divide(dr.square())).simplify();
+            Value ix = cx.add(d.multiply(dy).add(factor.multiply(Value.number(signX)).multiply(dx).multiply(discriminant.sqrt())).divide(dr.square())).simplify();
+            Value iy = cy.add(d.negate().multiply(dx).add(factor.multiply(dy.abs()).multiply(discriminant.sqrt())).divide(dr.square())).simplify();
+            System.out.println(ix);
+            System.out.println(iy);
             Point point = new Point(ix, iy);
             Tribool contains = segment.contains(point);
             if (contains.isUnknown())

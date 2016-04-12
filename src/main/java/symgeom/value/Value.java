@@ -9,7 +9,7 @@ public abstract class Value
 
     public final String toString()
     {
-        if (true)
+        if (false)
         {
             return toExpression(0);
         }
