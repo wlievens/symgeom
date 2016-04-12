@@ -9,7 +9,7 @@ public abstract class Value
 
     public final String toString()
     {
-        if (false)
+        if (true)
         {
             return toExpression(0);
         }
@@ -208,6 +208,11 @@ public abstract class Value
     public static Value number(int value)
     {
         return IntegerValue.create(value);
+    }
+
+    public static final Value add(Value left, Value right)
+    {
+        return AddValue.create(left, right);
     }
 
     public static Value fraction(int numerator, int denominator)

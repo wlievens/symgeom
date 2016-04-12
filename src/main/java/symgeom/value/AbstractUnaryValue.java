@@ -54,7 +54,11 @@ public abstract class AbstractUnaryValue extends Value
         {
             return String.format("%s(%s)", operator.getSymbol(), operand.toExpression(0));
         }
-        return String.format("%s%s", operator.getSymbol(), operand.toExpression(0));
+        if (operand instanceof IntegerValue || operand instanceof AbstractConstantValue)
+        {
+            return String.format("%s%s", operator.getSymbol(), operand.toExpression(0));
+        }
+        return String.format("%s(%s)", operator.getSymbol(), operand.toExpression(0));
     }
 
     @Override

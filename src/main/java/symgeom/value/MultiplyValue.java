@@ -44,6 +44,13 @@ public final class MultiplyValue extends AbstractBinaryValue
             }
         }
 
+        if ((left.isInteger() || left.isFraction()) && right instanceof NegateValue)
+        {
+            Value a = left.negate().simplify();
+            Value b = right.negate().simplify();
+            return create(a, b);
+        }
+
         if (left instanceof DivideValue || right instanceof DivideValue)
         {
             // A/B * C/D --> AC/BD

@@ -316,8 +316,15 @@ public class TestValue
     @Test
     public void test038()
     {
-        //posX = {DivideValue@1261} "(4 + (-15 / 37 + (7 / 37) * sqrt(287))) / 14"
-        //posY = {DivideValue@1262} "--10 + (-105 / 37 + (-25 / 37) * sqrt(287)) / 50"
-        //assertEquals(Tribool.)
+        Value x = number(4).add(number(-16).divide(number(37)).add(number(7).divide(number(37)).multiply(number(287).sqrt()))).divide(number(14));
+        Value y = ((Value.add(number(-10), fraction(-105, 37).add(fraction(-25, 37).multiply(number(287).sqrt())))).negate()).divide(number(50));
+        assertEquals(Tribool.TRUE, x.eq(y));
+    }
+
+    @Test
+    public void test039()
+    {
+        Value value = fraction(-5, 37).multiply(number(2).sqrt().negate());
+        assertEquals("(5 / 37) * sqrt(2)", value.simplify().toString());
     }
 }

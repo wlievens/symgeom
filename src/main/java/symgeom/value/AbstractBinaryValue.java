@@ -46,11 +46,11 @@ public abstract class AbstractBinaryValue extends Value
     @Override
     public Tribool eqInternal(Value value)
     {
-        Value other = value.simplify();
-        if (this instanceof AbstractBinaryValue && this.getClass() == other.getClass())
+        value = value.simplify();
+        if (this instanceof AbstractBinaryValue && this.getClass() == value.getClass())
         {
             AbstractBinaryValue bx = (AbstractBinaryValue)this;
-            AbstractBinaryValue by = (AbstractBinaryValue)other;
+            AbstractBinaryValue by = (AbstractBinaryValue)value;
             if (bx.left.eq(by.left).isTrue() && bx.right.eq(by.right).isTrue())
             {
                 return Tribool.TRUE;
@@ -71,15 +71,19 @@ public abstract class AbstractBinaryValue extends Value
                 Value bc = b.multiply(c).simplify();
                 return ad.eq(bc);
             }
+            if (bx instanceof AddValue && by instanceof AddValue)
+            {
+                throw new IllegalStateException();
+            }
         }
-        if (this instanceof DivideValue && other instanceof IntegerValue)
+        if (this instanceof DivideValue && value instanceof IntegerValue)
         {
             // both are fractions
             // A/B = C -> A = BC
             AbstractBinaryValue bx = (AbstractBinaryValue)this;
             Value a = bx.left.simplify();
             Value b = bx.right.simplify();
-            Value c = other;
+            Value c = value;
             Value bc = b.multiply(c).simplify();
             return a.eq(bc);
         }

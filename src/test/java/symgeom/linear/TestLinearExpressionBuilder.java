@@ -92,4 +92,13 @@ public class TestLinearExpressionBuilder
         LinearExpression expression = new LinearExpressionBuilder().build(input);
         assertEquals("Linear[36/1 {1} + -4/1 {sqrt(11)}]", expression.toString());
     }
+
+    @Test
+    public void testBuild013()
+    {
+        Value input = number(2).add(fraction(21, 37).add(fraction(5, 37).multiply(number(287).sqrt()))).divide(number(10));
+        System.out.println(input);
+        LinearExpression expression = new LinearExpressionBuilder().build(input);
+        assertEquals("Linear[1/5 {1} + 21/370 {1} + 1/74 {sqrt(287)}]", expression.toString());
+    }
 }
