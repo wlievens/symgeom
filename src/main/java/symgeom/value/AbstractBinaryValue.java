@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import symgeom.linear.LinearExpression;
+import symgeom.linear.LinearExpressionBuilder;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -73,7 +75,19 @@ public abstract class AbstractBinaryValue extends Value
             }
             if (bx instanceof AddValue && by instanceof AddValue)
             {
-                throw new IllegalStateException();
+                LinearExpressionBuilder builder = new LinearExpressionBuilder();
+                LinearExpression expression1 = builder.build(bx);
+                LinearExpression expression2 = builder.build(by);
+                System.out.println("bx: " + bx);
+                System.out.println("expression1: " + expression1);
+                System.out.println("expression1 approximate: " + expression1.toValue().approximate());
+                System.out.println("by: " + by);
+                System.out.println("expression2: " + expression2);
+                System.out.println("expression2 approximate: " + expression2.toValue().approximate());
+                if (expression1.equals(expression2))
+                {
+                    return Tribool.TRUE;
+                }
             }
         }
         if (this instanceof DivideValue && value instanceof IntegerValue)

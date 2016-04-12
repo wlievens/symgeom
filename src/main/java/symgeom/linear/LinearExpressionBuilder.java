@@ -12,7 +12,7 @@ public class LinearExpressionBuilder
 {
     public LinearExpression build(Value value)
     {
-        return new LinearExpression(buildTerms(value, 1, 1));
+        return new LinearExpression(buildTerms(value, 1, 1)).simplify();
     }
 
     private ImmutableList<LinearTerm> buildTerms(Value value, int numerator, int denominator)
@@ -23,10 +23,10 @@ public class LinearExpressionBuilder
             Value right = ((AbstractBinaryValue)value).getRight();
             if (value instanceof AddValue)
             {
-                return ImmutableList.<LinearTerm> builder()
-                    .addAll(buildTerms(left, numerator, denominator))
-                    .addAll(buildTerms(right, numerator, denominator))
-                    .build();
+                return ImmutableList.<LinearTerm>builder()
+                        .addAll(buildTerms(left, numerator, denominator))
+                        .addAll(buildTerms(right, numerator, denominator))
+                        .build();
             }
             if (value instanceof DivideValue)
             {
@@ -38,6 +38,13 @@ public class LinearExpressionBuilder
                 if (right.isInteger())
                 {
                     return buildTerms(left, numerator, denominator * right.asInteger());
+                }
+            }
+            if (value instanceof MultiplyValue)
+            {
+                if (left.isInteger())
+                {
+                    return buildTerms(right, numerator * left.asInteger(), denominator);
                 }
             }
         }

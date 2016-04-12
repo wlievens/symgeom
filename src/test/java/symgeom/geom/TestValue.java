@@ -316,8 +316,12 @@ public class TestValue
     @Test
     public void test038()
     {
-        Value x = number(4).add(number(-16).divide(number(37)).add(number(7).divide(number(37)).multiply(number(287).sqrt()))).divide(number(14));
-        Value y = ((Value.add(number(-10), fraction(-105, 37).add(fraction(-25, 37).multiply(number(287).sqrt())))).negate()).divide(number(50));
+        Value x = number(4).add(number(-15).divide(number(37)).add(number(7).divide(number(37)).multiply(number(287).sqrt()))).divide(number(14));
+        Value y = number(10).add(number(105).divide(number(37)).add(number(25).divide(number(37)).multiply(number(287).sqrt()))).divide(number(50));
+        System.out.println("X: " + x);
+        System.out.println("Y: " + y);
+        System.out.println("X simplified: " + x.simplify());
+        System.out.println("Y simplified: " + y.simplify());
         assertEquals(Tribool.TRUE, x.eq(y));
     }
 
@@ -327,4 +331,17 @@ public class TestValue
         Value value = fraction(-5, 37).multiply(number(2).sqrt().negate());
         assertEquals("(5 / 37) * sqrt(2)", value.simplify().toString());
     }
+
+    @Test
+    public void test040()
+    {
+        Value x = number(10).multiply(number(2).add(number(-15).divide(number(74)).add(number(7).divide(number(74)).multiply(number(287).sqrt()))));
+        Value y = number(7).multiply(number(2).add(number(21).divide(number(37)).add(number(5).divide(number(37)).multiply(number(287).sqrt()))));
+        System.out.println("X: " + x);
+        System.out.println("Y: " + y);
+        System.out.println("X simplified: " + x.simplify());
+        System.out.println("Y simplified: " + y.simplify());
+        assertEquals(Tribool.TRUE, x.eq(y));
+    }
+
 }
