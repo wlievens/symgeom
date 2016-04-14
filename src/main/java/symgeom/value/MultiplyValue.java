@@ -12,7 +12,7 @@ public final class MultiplyValue extends AbstractBinaryValue
         super(left, right);
     }
 
-    public Value simplify()
+    public Value old_simplify()
     {
         Value left = getLeft().simplify();
         if (left.isZero().isTrue())
@@ -50,6 +50,11 @@ public final class MultiplyValue extends AbstractBinaryValue
             {
                 return Value.number((int)result);
             }
+        }
+
+        if (left.eq(right).isTrue())
+        {
+            return left.power(number(2)).simplify();
         }
 
         if ((left.isInteger() || left.isFraction()) && right instanceof NegateValue)

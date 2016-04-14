@@ -49,10 +49,6 @@ public abstract class AbstractBinaryValue extends Value
     public Tribool eqInternal(Value value)
     {
         value = value.simplify();
-        if (this.equals(value))
-        {
-            return Tribool.TRUE;
-        }
         if (this instanceof AbstractBinaryValue && this.getClass() == value.getClass())
         {
             AbstractBinaryValue bx = (AbstractBinaryValue)this;

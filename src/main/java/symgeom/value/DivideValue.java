@@ -13,7 +13,7 @@ public final class DivideValue extends AbstractBinaryValue
         super(left, right);
     }
 
-    public Value simplify()
+    public Value old_simplify()
     {
         Value left = getLeft().simplify();
         Value right = getRight().simplify();

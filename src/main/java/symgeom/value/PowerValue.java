@@ -23,7 +23,7 @@ public final class PowerValue extends AbstractBinaryValue
         return super.toExpression(precedence);
     }
 
-    public Value simplify()
+    public Value old_simplify()
     {
         Value left = getLeft().simplify();
         if (left.isZero().isTrue())
@@ -72,6 +72,10 @@ public final class PowerValue extends AbstractBinaryValue
             Value b = power.getRight();
             Value c = right;
             Value bc = b.multiply(c).simplify();
+            if (bc.eq(ONE).isTrue())
+            {
+                return a;
+            }
             return create(a, bc).simplify();
         }
         if (left.isInteger() && right.eq(fraction(1, 2)).isTrue())
@@ -170,6 +174,17 @@ public final class PowerValue extends AbstractBinaryValue
             }
         }
         return super.lt(c);
+    }
+
+    @Override
+    public Tribool eqInternal(Value value)
+    {
+        if (!simplify().isInteger())
+        {
+            // If we can't simplify to an integer, any comparison with an integer will be false
+            return Tribool.FALSE;
+        }
+        return this.multiply(this).simplify().eq(value.simplify());
     }
 
     @Override

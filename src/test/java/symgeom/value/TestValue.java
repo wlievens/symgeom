@@ -1,8 +1,6 @@
-package symgeom.geom;
+package symgeom.value;
 
 import org.junit.Test;
-import symgeom.value.Tribool;
-import symgeom.value.Value;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -377,5 +375,22 @@ public class TestValue
     {
         Value value = number(50).multiply(number(2).sqrt());
         assertEquals(Tribool.FALSE, value.isStrictlyNegative());
+    }
+
+    @Test
+    public void test046()
+    {
+        Value value = number(2).sqrt();
+        assertEquals(Tribool.FALSE, value.eq(ZERO));
+        assertEquals(number(2), value.multiply(value).simplify());
+        assertEquals(Tribool.TRUE, value.isStrictlyPositive());
+        assertEquals(Tribool.FALSE, value.isStrictlyNegative());
+        assertEquals(Tribool.FALSE, value.isZero());
+    }
+
+    @Test
+    public void test047()
+    {
+        assertTrue(PI.equals(PI));
     }
 }

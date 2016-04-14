@@ -1,4 +1,4 @@
-package symgeom.value;
+package symgeom.geom;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import symgeom.geom.Circle;
 import symgeom.geom.Point;
 import symgeom.geom.Segment;
+import symgeom.value.Value;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

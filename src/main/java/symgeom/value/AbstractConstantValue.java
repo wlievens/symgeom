@@ -8,8 +8,7 @@ public abstract class AbstractConstantValue extends Value
         return 1;
     }
 
-    @Override
-    public final Value simplify()
+    public final Value old_simplify()
     {
         return this;
     }

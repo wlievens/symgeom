@@ -1,8 +1,10 @@
-package symgeom.value;
+package symgeom.geom;
 
+import org.junit.Assert;
 import org.junit.Test;
 import symgeom.geom.Point;
 import symgeom.geom.Segment;
+import symgeom.value.Value;
 
 import java.util.Optional;
 
@@ -14,7 +16,7 @@ public class TestSegment
     public void testGetLength()
     {
         Segment segment = new Segment(new Point(20, 30), new Point(50, 80));
-        assertEquals(Value.number(10).multiply(Value.number(34).sqrt()), segment.getLength());
+        Assert.assertEquals(Value.number(10).multiply(Value.number(34).sqrt()), segment.getLength());
     }
 
     @Test

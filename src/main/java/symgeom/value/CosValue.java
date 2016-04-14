@@ -3,14 +3,14 @@ package symgeom.value;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public final class CosineValue extends AbstractUnaryValue
+public final class CosValue extends AbstractUnaryValue
 {
-    private CosineValue(Value operand)
+    private CosValue(Value operand)
     {
         super(operand);
     }
 
-    public Value simplify()
+    public Value old_simplify()
     {
         Value operand = getOperand().simplify();
         if (operand == PI)
@@ -32,6 +32,6 @@ public final class CosineValue extends AbstractUnaryValue
 
     public static Value create(Value operand)
     {
-        return new CosineValue(operand);
+        return new CosValue(operand);
     }
 }

@@ -1,5 +1,7 @@
 package symgeom.value;
 
+import symgeom.simplifier.Simplifier;
+
 public abstract class Value
 {
     public static final Value PI = PIValue.INSTANCE;
@@ -7,8 +9,14 @@ public abstract class Value
     public static final Value ZERO = Value.number(0);
     public static final Value ONE = Value.number(1);
 
+    private static final Simplifier simplifier = new Simplifier();
+
     public final String toString()
     {
+        if (false)
+        {
+            return toPrefix();
+        }
         if (true)
         {
             return toExpression(0);
@@ -75,12 +83,20 @@ public abstract class Value
 
     public abstract String toExpression(int precedence);
 
-    public abstract Value simplify();
+    public final Value simplify()
+    {
+        return simplifier.simplify(this);
+    }
 
     public abstract double approximate();
 
     public final Tribool eq(Value value)
     {
+        value = value.simplify();
+        if (equals(value))
+        {
+            return Tribool.TRUE;
+        }
         return simplify().eqInternal(value);
     }
 
@@ -198,12 +214,12 @@ public abstract class Value
 
     public static Value cos(Value value)
     {
-        return CosineValue.create(value);
+        return CosValue.create(value);
     }
 
     public static Value sin(Value value)
     {
-        return SineValue.create(value);
+        return SinValue.create(value);
     }
 
     public static Value number(int value)

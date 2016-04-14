@@ -10,7 +10,7 @@ public final class AbsValue extends AbstractUnaryValue
         super(operand);
     }
 
-    public Value simplify()
+    public Value old_simplify()
     {
         Value operand = getOperand().simplify();
         if (operand.isInteger())

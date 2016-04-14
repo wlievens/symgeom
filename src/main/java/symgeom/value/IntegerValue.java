@@ -29,7 +29,7 @@ public final class IntegerValue extends Value
         return String.valueOf(value);
     }
 
-    public Value simplify()
+    public Value old_simplify()
     {
         return this;
     }
@@ -58,6 +58,17 @@ public final class IntegerValue extends Value
         {
             return Tribool.of(this.value < value.asInteger());
         }
+        Tribool eq = eq(value);
+        if (eq.isKnown())
+        {
+            if (eq.isTrue())
+            {
+                return Tribool.FALSE;
+            }
+            return value.lt(this).invert();
+        }
+        return Tribool.UNKNOWN;
+        /*
         Sign sign = value.getSign();
         switch (sign)
         {
@@ -82,7 +93,7 @@ public final class IntegerValue extends Value
                 break;
             }
         }
-        return value.lt(this).invert();
+        */
     }
 
     public static Value create(int value)

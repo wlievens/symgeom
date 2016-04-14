@@ -7,9 +7,29 @@ import java.util.stream.Collector;
 
 public class Util
 {
+    public static boolean canSubtract(int a, int b)
+    {
+        return isInt(BigInteger.valueOf(a).subtract(BigInteger.valueOf(b)));
+    }
+
     public static boolean isInt(BigInteger integer)
     {
         return integer.equals(BigInteger.valueOf(integer.intValue()));
+    }
+
+    public static boolean canAdd(int a, int b)
+    {
+        return isInt(BigInteger.valueOf(a).add(BigInteger.valueOf(b)));
+    }
+
+    public static boolean canMultiply(int a, int b)
+    {
+        return isInt(BigInteger.valueOf(a).multiply(BigInteger.valueOf(b)));
+    }
+
+    public static boolean canExponentiate(int a, int b)
+    {
+        return isInt(BigInteger.valueOf(a).pow(b));
     }
 
     public static int gcd(int a, int b)

@@ -3,14 +3,14 @@ package symgeom.value;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-public final class SineValue extends AbstractUnaryValue
+public final class SinValue extends AbstractUnaryValue
 {
-    private SineValue(Value operand)
+    private SinValue(Value operand)
     {
         super(operand);
     }
 
-    public Value simplify()
+    public Value old_simplify()
     {
         Value operand = getOperand().simplify();
         if (operand == PI || (operand.isInteger() && operand.asInteger() == 0))
@@ -28,6 +28,6 @@ public final class SineValue extends AbstractUnaryValue
 
     public static Value create(Value operand)
     {
-        return new SineValue(operand);
+        return new SinValue(operand);
     }
 }
