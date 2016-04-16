@@ -13,7 +13,7 @@ public final class PowerValue extends AbstractBinaryValue
     @Override
     public String toExpression(int precedence)
     {
-        if (getRight().equals(fraction(1, 2)))
+        if (getRight().equals(HALF))
         {
             return "sqrt(" + getLeft().toString() + ")";
         }
@@ -30,7 +30,7 @@ public final class PowerValue extends AbstractBinaryValue
         Sign cSign = c.getSign();
         if (cSign.isZero())
         {
-            if (b.eq(fraction(1, 2)).isTrue())
+            if (b.equals(HALF))
             {
                 // SQRT(A) < 0  ->  [false if A > 0]
                 return a.gt(ZERO).invert();
@@ -38,7 +38,7 @@ public final class PowerValue extends AbstractBinaryValue
         }
         if (cSign.isNegative())
         {
-            if (b.eq(fraction(1, 2)).isTrue())
+            if (b.equals(HALF))
             {
                 // SQRT is never negative
                 return Tribool.FALSE;

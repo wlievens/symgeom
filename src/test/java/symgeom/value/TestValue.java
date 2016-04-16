@@ -98,7 +98,7 @@ public class TestValue
         Value value = number(2_000_000_000).add(number(2_000_000_000));
         assertEquals("2000000000 + 2000000000", value.toString());
         assertEquals(4e9, value.approximate(), DELTA);
-        assertEquals(value, value.simplify());
+        assertEquals(number(4_000_000_000L), value.simplify());
     }
 
     @Test
@@ -246,7 +246,7 @@ public class TestValue
     @Test
     public void test029()
     {
-        Value value = fraction(1, 2).multiply(number(2)).simplify();
+        Value value = HALF.multiply(number(2)).simplify();
         assertEquals(1.0, value.approximate(), DELTA);
         assertEquals("1", value.toString());
     }

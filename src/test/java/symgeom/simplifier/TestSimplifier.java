@@ -119,7 +119,7 @@ public class TestSimplifier
     @Test
     public void test014()
     {
-        Value input = fraction(1, 2).multiply(number(2));
+        Value input = HALF.multiply(number(2));
         Value reference = number(1);
         verify(reference, input);
     }
@@ -321,6 +321,22 @@ public class TestSimplifier
     {
         Value input = number(400).add(number(200).multiply(PI)).divide(number(30)).simplify();
         Value reference = number(40).add(number(20).multiply(PI)).divide(number(3));
+        verify(reference, input);
+    }
+
+    @Test
+    public void test040()
+    {
+        Value input = fraction(0, 16);
+        Value reference = ZERO;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test041()
+    {
+        Value input = number(3400).sqrt();
+        Value reference = number(10).multiply(number(34).sqrt());
         verify(reference, input);
     }
 

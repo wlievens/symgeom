@@ -8,8 +8,9 @@ public abstract class Value
 {
     public static final Value PI = PIValue.INSTANCE;
     public static final Value E = EValue.INSTANCE;
-    public static final Value ZERO = Value.number(0);
-    public static final Value ONE = Value.number(1);
+    public static final Value ZERO = number(0);
+    public static final Value ONE = number(1);
+    public static final Value HALF = fraction(1, 2);
 
     private static final Simplifier simplifier = new Simplifier();
 
@@ -55,7 +56,7 @@ public abstract class Value
 
     public final Value sqrt()
     {
-        return PowerValue.create(this, fraction(1, 2));
+        return PowerValue.create(this, HALF);
     }
 
     public final Value add(Value value)
@@ -229,6 +230,11 @@ public abstract class Value
         return number(BigInteger.valueOf(value));
     }
 
+    public static Value number(long value)
+    {
+        return number(BigInteger.valueOf(value));
+    }
+
     public static Value number(BigInteger value)
     {
         return IntegerValue.create(value);
@@ -251,6 +257,6 @@ public abstract class Value
 
     public static Value sqrt(Value value)
     {
-        return PowerValue.create(value, fraction(1, 2));
+        return value.sqrt();
     }
 }
