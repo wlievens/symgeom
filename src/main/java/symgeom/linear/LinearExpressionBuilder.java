@@ -10,14 +10,18 @@ import symgeom.value.NegateValue;
 import symgeom.value.SubtractValue;
 import symgeom.value.Value;
 
+import java.math.BigInteger;
+
+import static symgeom.value.Value.ONE;
+
 public class LinearExpressionBuilder
 {
     public LinearExpression build(Value value)
     {
-        return new LinearExpression(buildTerms(value, 1, 1)).simplify();
+        return new LinearExpression(buildTerms(value, BigInteger.ONE, BigInteger.ONE)).simplify();
     }
 
-    private ImmutableList<LinearTerm> buildTerms(Value value, int numerator, int denominator)
+    private ImmutableList<LinearTerm> buildTerms(Value value, BigInteger numerator, BigInteger denominator)
     {
         if (value instanceof AbstractBinaryValue)
         {
@@ -25,41 +29,41 @@ public class LinearExpressionBuilder
             Value right = ((AbstractBinaryValue)value).getRight();
             if (value instanceof AddValue)
             {
-                return ImmutableList.<LinearTerm>builder()
-                        .addAll(buildTerms(left, numerator, denominator))
-                        .addAll(buildTerms(right, numerator, denominator))
-                        .build();
+                return ImmutableList.<LinearTerm> builder()
+                    .addAll(buildTerms(left, numerator, denominator))
+                    .addAll(buildTerms(right, numerator, denominator))
+                    .build();
             }
             if (value instanceof SubtractValue)
             {
-                return ImmutableList.<LinearTerm>builder()
-                        .addAll(buildTerms(left, numerator, denominator))
-                        .addAll(buildTerms(right, -numerator, denominator))
-                        .build();
+                return ImmutableList.<LinearTerm> builder()
+                    .addAll(buildTerms(left, numerator, denominator))
+                    .addAll(buildTerms(right, numerator.negate(), denominator))
+                    .build();
             }
             if (value instanceof DivideValue)
             {
                 if (left.isInteger() && right.isInteger())
                 {
                     // TODO overflow
-                    return ImmutableList.of(LinearTerm.create(numerator * left.asInteger(), denominator * right.asInteger(), Value.ONE));
+                    return ImmutableList.of(LinearTerm.create(numerator.multiply(left.asInteger()), denominator.multiply(right.asInteger()), ONE));
                 }
                 if (right.isInteger())
                 {
-                    return buildTerms(left, numerator, denominator * right.asInteger());
+                    return buildTerms(left, numerator, denominator.multiply(right.asInteger()));
                 }
             }
             if (value instanceof MultiplyValue)
             {
                 if (left.isInteger())
                 {
-                    return buildTerms(right, numerator * left.asInteger(), denominator);
+                    return buildTerms(right, numerator.multiply(left.asInteger()), denominator);
                 }
             }
         }
         if (value instanceof NegateValue)
         {
-            return buildTerms(((NegateValue)value).getOperand(), -numerator, denominator);
+            return buildTerms(((NegateValue)value).getOperand(), numerator.negate(), denominator);
         }
         return ImmutableList.of(buildTerm(value).multiply(numerator, denominator));
     }
@@ -78,7 +82,7 @@ public class LinearExpressionBuilder
                 }
                 if (left.isInteger())
                 {
-                    return LinearTerm.create(left.asInteger(), 1, Value.ONE.divide(right));
+                    return LinearTerm.create(left.asInteger(), BigInteger.ONE, ONE.divide(right));
                 }
                 if (right.isInteger())
                 {
@@ -87,13 +91,13 @@ public class LinearExpressionBuilder
                         MultiplyValue multiply = (MultiplyValue)left;
                         if (multiply.getLeft().isInteger())
                         {
-                            int a = multiply.getLeft().asInteger();
-                            int b = right.asInteger();
+                            BigInteger a = multiply.getLeft().asInteger();
+                            BigInteger b = right.asInteger();
                             Value c = multiply.getRight();
                             return LinearTerm.create(a, b, c);
                         }
                     }
-                    return LinearTerm.create(1, right.asInteger(), left);
+                    return LinearTerm.create(BigInteger.ONE, right.asInteger(), left);
                 }
             }
             else if (value instanceof MultiplyValue)
@@ -101,15 +105,15 @@ public class LinearExpressionBuilder
                 if (left.isInteger() && right.isInteger())
                 {
                     // There is some reason (overflow?) why we can't multiply left & right
-                    return LinearTerm.create(1, 1, value);
+                    return LinearTerm.create(BigInteger.ONE, BigInteger.ONE, value);
                 }
                 if (left.isInteger())
                 {
-                    return LinearTerm.create(left.asInteger(), 1, right);
+                    return LinearTerm.create(left.asInteger(), BigInteger.ONE, right);
                 }
                 if (right.isInteger())
                 {
-                    return LinearTerm.create(right.asInteger(), 1, left);
+                    return LinearTerm.create(right.asInteger(), BigInteger.ONE, left);
                 }
                 if (left instanceof DivideValue && ((DivideValue)left).getLeft().isInteger() && ((DivideValue)left).getRight().isInteger())
                 {
@@ -119,8 +123,8 @@ public class LinearExpressionBuilder
         }
         if (value instanceof IntegerValue)
         {
-            return LinearTerm.create(((IntegerValue)value).getValue(), 1, Value.ONE);
+            return LinearTerm.create(((IntegerValue)value).getValue(), BigInteger.ONE, ONE);
         }
-        return LinearTerm.create(1, 1, value);
+        return LinearTerm.create(BigInteger.ONE, BigInteger.ONE, value);
     }
 }

@@ -10,20 +10,6 @@ public final class AbsValue extends AbstractUnaryValue
         super(operand);
     }
 
-    public Value old_simplify()
-    {
-        Value operand = getOperand().simplify();
-        if (operand.isInteger())
-        {
-            return Value.number(Math.abs(operand.asInteger()));
-        }
-        if (operand.isStrictlyPositive().isTrue())
-        {
-            return operand;
-        }
-        return create(operand);
-    }
-
     @Override
     public Tribool lt(Value value)
     {

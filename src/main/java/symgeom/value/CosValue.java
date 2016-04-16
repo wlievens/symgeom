@@ -10,20 +10,6 @@ public final class CosValue extends AbstractUnaryValue
         super(operand);
     }
 
-    public Value old_simplify()
-    {
-        Value operand = getOperand().simplify();
-        if (operand == PI)
-        {
-            return Value.number(-1);
-        }
-        if (operand.isInteger() && operand.asInteger() == 0)
-        {
-            return Value.ONE;
-        }
-        return create(operand);
-    }
-
     @Override
     public UnaryOperator getOperator()
     {

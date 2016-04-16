@@ -1,8 +1,6 @@
 package symgeom.simplifier;
 
-import symgeom.linear.LinearExpression;
 import symgeom.linear.LinearExpressionBuilder;
-import symgeom.util.Util;
 import symgeom.value.AbstractBinaryValue;
 import symgeom.value.AbstractConstantValue;
 import symgeom.value.AbstractUnaryValue;
@@ -23,8 +21,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.addExact;
-import static java.lang.Math.multiplyExact;
+import static symgeom.util.Util.isInt;
 import static symgeom.value.Value.*;
 
 public class Simplifier
@@ -60,7 +57,7 @@ public class Simplifier
                 Method create = value.getClass().getMethod("create", Value.class, Value.class);
                 value = (Value)create.invoke(null, left, right);
             }
-            System.out.println("SIMPLIFY " + value);
+            System.out.println("SIMPLIFY " + value.toPrefix());
             // Apply rules
             for (int index = 0; index < rules.size(); index++)
             {
@@ -71,11 +68,15 @@ public class Simplifier
                     Value result = rule.execute(value);
                     if (result != null)
                     {
-                        value = result;
                         System.out.println("::: " + rule.getLabel());
-                        System.out.println("    " + result);
-                        // Start simplification again
-                        value = simplify(value);
+                        System.out.println("    value:  " + value.toPrefix());
+                        System.out.println("    result: " + result.toPrefix());
+                        if (!result.equals(value))
+                        {
+                            // Start simplification again
+                            value = simplify(result);
+                            break;
+                        }
                     }
                 }
             }
@@ -151,15 +152,7 @@ public class Simplifier
             "A+B integers",
             value -> value instanceof AddValue,
             (left, right) -> left.isInteger() && right.isInteger(),
-            (left, right) -> {
-                int x = left.asInteger();
-                int y = right.asInteger();
-                if (Util.canAdd(x, y))
-                {
-                    return number(addExact(x, y));
-                }
-                return null;
-            }
+            (left, right) -> number(left.asInteger().add(right.asInteger()))
         ));
 
         // Integer Subtraction
@@ -167,15 +160,7 @@ public class Simplifier
             "A-B integers",
             value -> value instanceof SubtractValue,
             (left, right) -> left.isInteger() && right.isInteger(),
-            (left, right) -> {
-                int x = left.asInteger();
-                int y = right.asInteger();
-                if (Util.canSubtract(x, y))
-                {
-                    return number(Math.subtractExact(x, y));
-                }
-                return null;
-            }
+            (left, right) -> number(left.asInteger().subtract(right.asInteger()))
         ));
 
         // Integer Multiplication
@@ -183,15 +168,7 @@ public class Simplifier
             "A*B integers",
             value -> value instanceof MultiplyValue,
             (left, right) -> left.isInteger() && right.isInteger(),
-            (left, right) -> {
-                int x = left.asInteger();
-                int y = right.asInteger();
-                if (Util.canMultiply(x, y))
-                {
-                    return number(multiplyExact(x, y));
-                }
-                return null;
-            }
+            (left, right) -> number(left.asInteger().multiply(right.asInteger()))
         ));
 
         // Integer Division
@@ -200,20 +177,20 @@ public class Simplifier
             value -> value instanceof DivideValue,
             (left, right) -> left.isInteger() && right.isInteger(),
             (left, right) -> {
-                int x = left.asInteger();
-                int y = right.asInteger();
-                int gcd = Util.gcd(x, y);
-                if (y / gcd < 0)
+                BigInteger a = left.asInteger();
+                BigInteger b = right.asInteger();
+                BigInteger gcd = a.gcd(b);
+                if (gcd.compareTo(BigInteger.ZERO) == -1)
                 {
-                    gcd = -gcd;
+                    gcd = gcd.negate();
                 }
-                int numerator = x / gcd;
-                int denominator = y / gcd;
-                if (denominator == 1)
+                BigInteger numerator = a.divide(gcd);
+                BigInteger denominator = b.divide(gcd);
+                if (denominator.equals(BigInteger.ONE))
                 {
                     return number(numerator);
                 }
-                if (gcd == 1)
+                if (gcd.equals(BigInteger.ONE))
                 {
                     return null;
                 }
@@ -227,11 +204,10 @@ public class Simplifier
             value -> value instanceof PowerValue,
             (left, right) -> left.isInteger() && right.isInteger(),
             (left, right) -> {
-                int x = left.asInteger();
-                int y = right.asInteger();
-                if (Util.canExponentiate(x, y))
+                BigInteger exponent = right.asInteger();
+                if (isInt(exponent))
                 {
-                    return number(BigInteger.valueOf(x).pow(y).intValue());
+                    return number(left.asInteger().pow(exponent.intValue()));
                 }
                 return null;
             }
@@ -246,11 +222,7 @@ public class Simplifier
                 Value a = left;
                 Value b = ((MultiplyValue)right).getLeft();
                 Value c = ((MultiplyValue)right).getRight();
-                if (Util.canMultiply(a.asInteger(), b.asInteger()))
-                {
-                    return number(Math.multiplyExact(a.asInteger(), b.asInteger())).multiply(c);
-                }
-                return null;
+                return number(a.asInteger().multiply(b.asInteger())).multiply(c);
             }
         ));
         rules.add(SimplifyBinaryRule.create(
@@ -261,11 +233,7 @@ public class Simplifier
                 Value a = ((MultiplyValue)left).getLeft();
                 Value b = ((MultiplyValue)left).getRight();
                 Value c = right;
-                if (Util.canMultiply(b.asInteger(), c.asInteger()))
-                {
-                    return number(Math.multiplyExact(b.asInteger(), c.asInteger())).multiply(a);
-                }
-                return null;
+                return number(b.asInteger().multiply(c.asInteger())).multiply(a);
             }
         ));
 
@@ -336,12 +304,17 @@ public class Simplifier
             (left, right) -> right instanceof DivideValue,
             (left, right) -> left.negate().divide(((NegateValue)right).getOperand())
         ));
-
         rules.add(SimplifyBinaryRule.create(
             "(A^B)^C  ->  A^(BC)",
             value -> value instanceof PowerValue,
             (left, right) -> left instanceof PowerValue,
             (left, right) -> ((PowerValue)left).getLeft().power(((PowerValue)left).getRight().multiply(right))
+        ));
+        rules.add(SimplifyBinaryRule.create(
+            "-1*A  ->  -A",
+            value -> value instanceof MultiplyValue,
+            (left, right) -> left.isInteger() && left.asInteger().equals(BigInteger.valueOf(-1)),
+            (left, right) -> right.negate()
         ));
 
         rules.add(SimplifyUnaryRule.create(
@@ -371,8 +344,8 @@ public class Simplifier
         rules.add(SimplifyUnaryRule.create(
             "-(A)  ->  -A  if A integer",
             value -> value instanceof NegateValue,
-            operand -> operand instanceof IntegerValue && operand.asInteger() != Integer.MIN_VALUE,
-            operand -> number(-operand.asInteger())
+            operand -> operand instanceof IntegerValue,
+            operand -> number(operand.asInteger().negate())
         ));
         rules.add(SimplifyUnaryRule.create(
             "-(-A))  ->  A",
@@ -387,13 +360,12 @@ public class Simplifier
             operand -> ((DivideValue)operand).getLeft().negate().divide(((DivideValue)operand).getRight())
         ));
 
-        LinearExpressionBuilder builder =n
+        // Linear Expression after all other special forms
+        LinearExpressionBuilder builder = new LinearExpressionBuilder();
         rules.add(SimplifyRule.create(
             "Linear Expression",
             value -> true,
-            value -> {
-                LinearExpression expression =
-            }
+            value -> builder.build(value).toValue()
         ));
     }
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import symgeom.util.Util;
 import symgeom.value.Value;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,13 +42,13 @@ public class LinearExpression
                 result.add(valueTerms.get(0).simplify());
                 continue;
             }
-            int lcm = Util.lcm(valueTerms.stream().mapToInt(LinearTerm::getDenominator).toArray());
-            int numerators = 0;
+            BigInteger[] denominators = valueTerms.stream().map(LinearTerm::getDenominator).toArray(size -> new BigInteger[size]);
+            BigInteger lcm = Util.lcm(denominators);
+            BigInteger numerators = BigInteger.ZERO;
             for (LinearTerm term : valueTerms)
             {
-                int factor = lcm / term.getDenominator();
-                // TODO check overflow!
-                numerators += term.getNumerator() * factor;
+                BigInteger factor = term.getNumerator().multiply(lcm.divide(term.getDenominator()));
+                numerators = numerators.add(factor);
             }
             result.add(LinearTerm.create(numerators, lcm, value).simplify());
         }

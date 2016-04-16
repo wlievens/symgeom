@@ -12,6 +12,61 @@ public final class MultiplyValue extends AbstractBinaryValue
         super(left, right);
     }
 
+    @Override
+    public Tribool lt(Value value)
+    {
+        // A*B < C
+        Value a = getLeft().simplify();
+        Value b = getRight().simplify();
+        Value c = value.simplify();
+
+        if (c.isZero().isTrue())
+        {
+            Sign leftSign = a.getSign();
+            Sign rightSign = b.getSign();
+            if (leftSign.isZero() || rightSign.isZero())
+            {
+                return Tribool.FALSE;
+            }
+            if (leftSign.isKnown() && rightSign.isKnown())
+            {
+                return Tribool.of(leftSign.isPositive() != rightSign.isPositive());
+            }
+        }
+
+        if (c.isInteger())
+        {
+            if (a.isInteger() || a.isFraction())
+            {
+                // A*B < C  ->  B <?> C/A
+                Sign sign = a.getSign();
+                Value ca = c.divide(a).simplify();
+                if (sign.isPositive())
+                {
+                    // A*B < C  ->  B < C/A
+                    return b.lt(ca);
+                }
+                if (sign.isNegative())
+                {
+                    // A*B < C  ->  B > C/A
+                    return b.gt(ca);
+                }
+            }
+            if (b.isInteger() || b.isFraction())
+            {
+                return a.simplify().lt(c.divide(b).simplify());
+            }
+        }
+
+        return super.lt(c);
+    }
+
+    @Override
+    public BinaryOperator getOperator()
+    {
+        return BinaryOperator.MULTIPLY;
+    }
+
     public Value old_simplify()
     {
         Value left = getLeft().simplify();
@@ -45,11 +100,7 @@ public final class MultiplyValue extends AbstractBinaryValue
 
         if (left.isInteger() && right.isInteger())
         {
-            long result = (long)left.asInteger() * (long)right.asInteger();
-            if (result >= Integer.MIN_VALUE && result <= Integer.MAX_VALUE)
-            {
-                return Value.number((int)result);
-            }
+            return number(left.asInteger().multiply(right.asInteger()));
         }
 
         if (left.eq(right).isTrue())
@@ -130,61 +181,6 @@ public final class MultiplyValue extends AbstractBinaryValue
 
         LinearExpression expression = new LinearExpressionBuilder().build(this);
         return expression.toValue();
-    }
-
-    @Override
-    public Tribool lt(Value value)
-    {
-        // A*B < C
-        Value a = getLeft().simplify();
-        Value b = getRight().simplify();
-        Value c = value.simplify();
-
-        if (c.isZero().isTrue())
-        {
-            Sign leftSign = a.getSign();
-            Sign rightSign = b.getSign();
-            if (leftSign.isZero() || rightSign.isZero())
-            {
-                return Tribool.FALSE;
-            }
-            if (leftSign.isKnown() && rightSign.isKnown())
-            {
-                return Tribool.of(leftSign.isPositive() != rightSign.isPositive());
-            }
-        }
-
-        if (c.isInteger())
-        {
-            if (a.isInteger() || a.isFraction())
-            {
-                // A*B < C  ->  B <?> C/A
-                Sign sign = a.getSign();
-                Value ca = c.divide(a).simplify();
-                if (sign.isPositive())
-                {
-                    // A*B < C  ->  B < C/A
-                    return b.lt(ca);
-                }
-                if (sign.isNegative())
-                {
-                    // A*B < C  ->  B > C/A
-                    return b.gt(ca);
-                }
-            }
-            if (b.isInteger() || b.isFraction())
-            {
-                return a.simplify().lt(c.divide(b).simplify());
-            }
-        }
-
-        return super.lt(c);
-    }
-
-    @Override
-    public BinaryOperator getOperator()
-    {
-        return BinaryOperator.MULTIPLY;
     }
 
     public static Value create(Value left, Value right)

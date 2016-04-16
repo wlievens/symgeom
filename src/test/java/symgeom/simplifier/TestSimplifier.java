@@ -3,6 +3,8 @@ package symgeom.simplifier;
 import org.junit.Test;
 import symgeom.value.Value;
 
+import java.math.BigInteger;
+
 import static org.junit.Assert.assertEquals;
 import static symgeom.value.Value.*;
 
@@ -30,7 +32,7 @@ public class TestSimplifier
     public void test003()
     {
         Value input = number(2000000000).add(number(1000000000));
-        Value reference = input;
+        Value reference = number(BigInteger.valueOf(3000000000L));
         verify(reference, input);
     }
 
@@ -198,7 +200,7 @@ public class TestSimplifier
     public void test024()
     {
         Value input = number(10000).multiply(number(1000000));
-        Value reference = input;
+        Value reference = number(BigInteger.valueOf(10000000000L));
         verify(reference, input);
     }
 
@@ -214,7 +216,7 @@ public class TestSimplifier
     public void test026()
     {
         Value input = number(10000).multiply(number(1000).square());
-        Value reference = number(10000).multiply(number(1000000));
+        Value reference = number(BigInteger.valueOf(10000000000L));
         verify(reference, input);
     }
 

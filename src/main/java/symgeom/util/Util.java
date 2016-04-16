@@ -45,16 +45,18 @@ public class Util
         return result;
     }
 
-    public static int lcm(int a, int b)
+    public static BigInteger lcm(BigInteger a, BigInteger b)
     {
-        // TODO check overflow!
-        return a * (b / gcd(a, b));
+        return a.multiply(b.divide(a.gcd(b)));
     }
 
-    public static int lcm(int... input)
+    public static BigInteger lcm(BigInteger... input)
     {
-        int result = input[0];
-        for (int i = 1; i < input.length; i++) result = lcm(result, input[i]);
+        BigInteger result = input[0];
+        for (int i = 1; i < input.length; i++)
+        {
+            result = lcm(result, input[i]);
+        }
         return result;
     }
 

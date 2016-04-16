@@ -2,6 +2,8 @@ package symgeom.value;
 
 import symgeom.simplifier.Simplifier;
 
+import java.math.BigInteger;
+
 public abstract class Value
 {
     public static final Value PI = PIValue.INSTANCE;
@@ -192,7 +194,7 @@ public abstract class Value
         return this instanceof IntegerValue;
     }
 
-    public final int asInteger()
+    public final BigInteger asInteger()
     {
         return ((IntegerValue)this).getValue();
     }
@@ -224,6 +226,11 @@ public abstract class Value
 
     public static Value number(int value)
     {
+        return number(BigInteger.valueOf(value));
+    }
+
+    public static Value number(BigInteger value)
+    {
         return IntegerValue.create(value);
     }
 
@@ -232,9 +239,14 @@ public abstract class Value
         return AddValue.create(left, right);
     }
 
-    public static Value fraction(int numerator, int denominator)
+    public static Value fraction(BigInteger numerator, BigInteger denominator)
     {
         return DivideValue.create(number(numerator), number(denominator));
+    }
+
+    public static Value fraction(int numerator, int denominator)
+    {
+        return fraction(BigInteger.valueOf(numerator), BigInteger.valueOf(denominator));
     }
 
     public static Value sqrt(Value value)

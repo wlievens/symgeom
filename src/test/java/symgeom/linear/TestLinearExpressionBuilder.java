@@ -124,4 +124,12 @@ public class TestLinearExpressionBuilder
         LinearExpression expression = new LinearExpressionBuilder().build(input);
         assertEquals("Linear[-33250/37 {1} + -1750/37 {sqrt(287)}]", expression.toString());
     }
+
+    @Test
+    public void testBuild017()
+    {
+        Value input = PI.negate();
+        LinearExpression expression = new LinearExpressionBuilder().build(input);
+        assertEquals("Linear[-1/1 {pi}]", expression.toString());
+    }
 }

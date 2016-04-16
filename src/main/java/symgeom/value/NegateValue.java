@@ -10,56 +10,6 @@ public final class NegateValue extends AbstractUnaryValue
         super(operand);
     }
 
-    public Value old_simplify()
-    {
-        Value operand = getOperand().simplify();
-        if (operand instanceof NegateValue)
-        {
-            return ((NegateValue)operand).getOperand();
-        }
-        if (operand.isInteger())
-        {
-            int number = operand.asInteger();
-            if (number != Integer.MIN_VALUE)
-            {
-                return Value.number(-number);
-            }
-        }
-        if (operand instanceof AbstractBinaryValue)
-        {
-            Value left = ((AbstractBinaryValue)operand).getLeft();
-            Value right = ((AbstractBinaryValue)operand).getRight();
-            if (operand instanceof DivideValue)
-            {
-                if (left.isInteger())
-                {
-                    return left.negate().simplify().divide(right);
-                }
-                if (right.isInteger())
-                {
-                    return left.simplify().divide(right.negate());
-                }
-                return left.negate().divide(right);
-            }
-            if (operand instanceof AddValue)
-            {
-                left = left.negate().simplify();
-                right = right.negate().simplify();
-                Value s1 = add(left, right);
-                Value s2 = s1.simplify();
-                return s2;
-            }
-            if (operand instanceof MultiplyValue)
-            {
-                left = left.negate().simplify();
-                right = right.negate().simplify();
-                return left.negate().multiply(right);
-            }
-        }
-
-        return create(operand);
-    }
-
     @Override
     public Tribool lt(Value value)
     {

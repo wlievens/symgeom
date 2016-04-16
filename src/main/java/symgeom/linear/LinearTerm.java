@@ -1,15 +1,17 @@
 package symgeom.linear;
 
 import lombok.RequiredArgsConstructor;
-import symgeom.util.Util;
+import symgeom.value.NegateValue;
 import symgeom.value.Value;
+
+import java.math.BigInteger;
 
 @lombok.Value
 @RequiredArgsConstructor
 public class LinearTerm
 {
-    private int numerator;
-    private int denominator;
+    private BigInteger numerator;
+    private BigInteger denominator;
     private Value value;
 
     @Override
@@ -20,32 +22,43 @@ public class LinearTerm
 
     public LinearTerm simplify()
     {
-        int gcd = Util.gcd(this.numerator, this.denominator);
-        if (gcd == 1 && denominator > 0)
+        if (value instanceof NegateValue && !isUnitary())
+        {
+            return create(numerator.negate(), denominator, ((NegateValue)value).getOperand()).simplify();
+        }
+        BigInteger gcd = this.numerator.gcd(this.denominator);
+        if (gcd.equals(BigInteger.ONE) && denominator.compareTo(BigInteger.ZERO) > 0)
         {
             return this;
         }
-        int numerator = this.numerator / gcd;
-        int denominator = this.denominator / gcd;
-        if (denominator < 0)
+        BigInteger numerator = this.numerator.divide(gcd);
+        BigInteger denominator = this.denominator.divide(gcd);
+        if (denominator.compareTo(BigInteger.ZERO) < 0)
         {
-            return create(-numerator, -denominator, value);
+            return create(numerator.negate(), denominator.negate(), value);
         }
         return create(numerator, denominator, value);
+    }
+
+    public boolean isUnitary()
+    {
+        return numerator.equals(BigInteger.ONE) && denominator.equals(BigInteger.ONE);
     }
 
     public Value toValue()
     {
         Value numerator = Value.number(this.numerator);
-        if (this.denominator == 1)
+        boolean numeratorOne = this.numerator.equals(BigInteger.ONE);
+        boolean denominatorOne = this.denominator.equals(BigInteger.ONE);
+        if (denominatorOne)
         {
-            if (this.numerator == 1)
+            if (numeratorOne)
             {
                 return value;
             }
-            if (this.numerator == -1)
+            if (this.numerator.equals(BigInteger.valueOf(-1)))
             {
-                return value.negate().simplify();
+                return value.negate();
             }
             if (value.equals(Value.ONE))
             {
@@ -54,7 +67,7 @@ public class LinearTerm
             return numerator.multiply(value);
         }
         Value denominator = Value.number(this.denominator);
-        if (this.numerator == 1)
+        if (numeratorOne)
         {
             return value.divide(denominator);
         }
@@ -65,23 +78,32 @@ public class LinearTerm
         return numerator.divide(denominator).multiply(value);
     }
 
-    public LinearTerm multiply(int numerator, int denominator)
+    public LinearTerm multiply(BigInteger numerator, BigInteger denominator)
     {
-        // TODO check overflow
-        return create(this.numerator * numerator, this.denominator * denominator, value).simplify();
+        return create(this.numerator.multiply(numerator), this.denominator.multiply(denominator), value).simplify();
     }
 
     public static LinearTerm create(Value value)
     {
-        return create(1, 1, value);
+        return create(BigInteger.ONE, BigInteger.ONE, value);
     }
 
     public static LinearTerm create(int numerator, int denominator, Value value)
     {
-        return new LinearTerm(numerator, denominator, value).simplify();
+        return create(BigInteger.valueOf(numerator), BigInteger.valueOf(denominator), value);
     }
 
     public static LinearTerm create(int numerator, int denominator)
+    {
+        return create(BigInteger.valueOf(numerator), BigInteger.valueOf(denominator));
+    }
+
+    public static LinearTerm create(BigInteger numerator, BigInteger denominator, Value value)
+    {
+        return new LinearTerm(numerator, denominator, value).simplify();
+    }
+
+    public static LinearTerm create(BigInteger numerator, BigInteger denominator)
     {
         return create(numerator, denominator, Value.ONE);
     }

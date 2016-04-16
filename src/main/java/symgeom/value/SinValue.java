@@ -10,16 +10,6 @@ public final class SinValue extends AbstractUnaryValue
         super(operand);
     }
 
-    public Value old_simplify()
-    {
-        Value operand = getOperand().simplify();
-        if (operand == PI || (operand.isInteger() && operand.asInteger() == 0))
-        {
-            return Value.ZERO;
-        }
-        return create(operand);
-    }
-
     @Override
     public UnaryOperator getOperator()
     {

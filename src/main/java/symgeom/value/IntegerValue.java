@@ -5,12 +5,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigInteger;
+
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IntegerValue extends Value
 {
     @Getter
-    private final int value;
+    private final BigInteger value;
 
     @Override
     public final int getDepth()
@@ -29,14 +31,9 @@ public final class IntegerValue extends Value
         return String.valueOf(value);
     }
 
-    public Value old_simplify()
-    {
-        return this;
-    }
-
     public double approximate()
     {
-        return value;
+        return value.doubleValue();
     }
 
     @Override
@@ -45,7 +42,7 @@ public final class IntegerValue extends Value
         Value other = value.simplify();
         if (other.isInteger())
         {
-            return Tribool.of(this.value == other.asInteger());
+            return Tribool.of(this.value.equals(other.asInteger()));
         }
         return Tribool.UNKNOWN;
     }
@@ -56,7 +53,7 @@ public final class IntegerValue extends Value
         value = value.simplify();
         if (value.isInteger())
         {
-            return Tribool.of(this.value < value.asInteger());
+            return Tribool.of(this.value.compareTo(value.asInteger()) == -1);
         }
         Tribool eq = eq(value);
         if (eq.isKnown())
@@ -96,7 +93,7 @@ public final class IntegerValue extends Value
         */
     }
 
-    public static Value create(int value)
+    public static Value create(BigInteger value)
     {
         return new IntegerValue(value);
     }
