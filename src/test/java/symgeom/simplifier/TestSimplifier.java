@@ -340,6 +340,14 @@ public class TestSimplifier
         verify(reference, input);
     }
 
+    @Test
+    public void test042()
+    {
+        Value input = number(50).multiply(number(2).sqrt()).power(number(2));
+        Value reference = number(5000);
+        verify(reference, input);
+    }
+
     private void verify(Value reference, Value input)
     {
         Value output = simplifier.simplify(input);

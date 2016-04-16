@@ -317,6 +317,14 @@ public class Simplifier
                 (left, right) -> right.negate()
         ));
         rules.add(SimplifyBinaryRule.create(
+                "(A*B)^C  ->  (A^C)*(B^C)  if A or B and C numeric",
+                value -> value instanceof PowerValue,
+                (left, right) -> left instanceof MultiplyValue
+                        && right.isNumeric()
+                        && (((MultiplyValue)left).getLeft().isNumeric() || ((MultiplyValue)left).getRight().isNumeric()),
+                (left, right) -> ((MultiplyValue)left).getLeft().power(right).multiply(((MultiplyValue)left).getRight().power(right))
+        ));
+        rules.add(SimplifyBinaryRule.create(
                 "Reduce number under square root",
                 value -> value instanceof PowerValue,
                 (left, right) -> left.isInteger() && left.asInteger().compareTo(BigInteger.ZERO) > 0 && right.equals(HALF),
@@ -408,7 +416,7 @@ public class Simplifier
         LinearExpressionBuilder builder = new LinearExpressionBuilder();
         rules.add(SimplifyRule.create(
                 "Linear Expression",
-                value -> !value.isInteger() && !value.isFraction(),
+                value -> !value.isInteger(),
                 value -> builder.build(value).toValue()
         ));
     }

@@ -154,6 +154,11 @@ public abstract class Value
         return lt(radius).invert();
     }
 
+    public final boolean isNumeric()
+    {
+        return isInteger() || isFraction();
+    }
+
     public final boolean isFraction()
     {
         return this instanceof DivideValue && ((DivideValue)this).getLeft().isInteger() && ((DivideValue)this).getRight().isInteger();
