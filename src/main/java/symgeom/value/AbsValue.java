@@ -10,8 +10,7 @@ public final class AbsValue extends AbstractUnaryValue
         super(operand);
     }
 
-    @Override
-    public Tribool lt(Value value)
+    public Tribool old_lt(Value value)
     {
         // ABS(A) < B
         Value b = value.simplify();

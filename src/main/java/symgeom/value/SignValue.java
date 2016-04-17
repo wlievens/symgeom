@@ -29,8 +29,7 @@ public final class SignValue extends AbstractUnaryValue
         return create(operand);
     }
 
-    @Override
-    public Tribool lt(Value value)
+    public Tribool old_lt(Value value)
     {
         Value self = simplify();
         if (self.isInteger())

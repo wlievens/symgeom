@@ -12,8 +12,7 @@ public final class MultiplyValue extends AbstractBinaryValue
         super(left, right);
     }
 
-    @Override
-    public Tribool lt(Value value)
+    public Tribool old_lt(Value value)
     {
         // A*B < C
         Value a = getLeft().simplify();

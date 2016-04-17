@@ -178,7 +178,7 @@ public class TestValue
     public void test020()
     {
         Value value = number(100).sqrt().multiply(number(-3));
-        assertEquals(Tribool.TRUE, value.isStrictlyNegative());
+        assertEquals(Tribool.TRUE, value.isNegative());
     }
 
     @Test
@@ -296,7 +296,7 @@ public class TestValue
     public void test035()
     {
         Value value = number(2).sqrt();
-        assertEquals(Tribool.FALSE, value.isStrictlyNegative());
+        assertEquals(Tribool.FALSE, value.isNegative());
     }
 
     @Test
@@ -374,7 +374,7 @@ public class TestValue
     public void test045()
     {
         Value value = number(50).multiply(number(2).sqrt());
-        assertEquals(Tribool.FALSE, value.isStrictlyNegative());
+        assertEquals(Tribool.FALSE, value.isNegative());
     }
 
     @Test
@@ -383,8 +383,8 @@ public class TestValue
         Value value = number(2).sqrt();
         assertEquals(Tribool.FALSE, value.eq(ZERO));
         assertEquals(number(2), value.multiply(value).simplify());
-        assertEquals(Tribool.TRUE, value.isStrictlyPositive());
-        assertEquals(Tribool.FALSE, value.isStrictlyNegative());
+        assertEquals(Tribool.TRUE, value.isPositive());
+        assertEquals(Tribool.FALSE, value.isNegative());
         assertEquals(Tribool.FALSE, value.isZero());
     }
 

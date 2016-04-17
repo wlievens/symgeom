@@ -10,8 +10,7 @@ public final class SubtractValue extends AbstractBinaryValue
         super(left, right);
     }
 
-    @Override
-    public Tribool lt(Value value)
+    public Tribool old_lt(Value value)
     {
         System.out.println(this + " < " + value);
         Value a = getLeft().simplify();

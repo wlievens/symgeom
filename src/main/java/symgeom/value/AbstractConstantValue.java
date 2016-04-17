@@ -25,19 +25,9 @@ public abstract class AbstractConstantValue extends Value
     }
 
     @Override
-    public Tribool eqInternal(Value value)
+    public final boolean isAtom()
     {
-        if (this.equals(value.simplify()))
-        {
-            return Tribool.TRUE;
-        }
-        return Tribool.UNKNOWN;
-    }
-
-    @Override
-    public Tribool lt(Value value)
-    {
-        return Tribool.UNKNOWN;
+        return true;
     }
 
     public abstract String getName();

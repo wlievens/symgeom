@@ -10,8 +10,7 @@ public final class AddValue extends AbstractBinaryValue
         super(left, right);
     }
 
-    @Override
-    public Tribool lt(Value value)
+    public Tribool old_lt(Value value)
     {
         value = value.simplify();
         if (value.isInteger())

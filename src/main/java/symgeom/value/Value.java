@@ -1,5 +1,7 @@
 package symgeom.value;
 
+import symgeom.comparator.Comparator;
+import symgeom.comparator.Order;
 import symgeom.simplifier.Simplifier;
 
 import java.math.BigInteger;
@@ -13,6 +15,7 @@ public abstract class Value
     public static final Value HALF = fraction(1, 2);
 
     private static final Simplifier simplifier = new Simplifier();
+    private static final Comparator comparator = new Comparator();
 
     public final String toString()
     {
@@ -95,30 +98,91 @@ public abstract class Value
 
     public final Tribool eq(Value value)
     {
-        value = value.simplify();
-        if (equals(value))
+        Value left = this.simplify();
+        Value right = value.simplify();
+        Order order = comparator.compare(left, right);
+        switch (order)
         {
-            return Tribool.TRUE;
+            case EQUAL:
+            {
+                return Tribool.TRUE;
+            }
+            case LESSER:
+            case GREATER:
+            {
+                return Tribool.FALSE;
+            }
+            case UNKNOWN:
+            {
+                return Tribool.UNKNOWN;
+            }
+            default:
+            {
+                throw new IllegalStateException();
+            }
         }
-        return simplify().eqInternal(value);
     }
 
-    public abstract Tribool eqInternal(Value value);
-
-    public abstract Tribool lt(Value value);
+    public final Tribool lt(Value value)
+    {
+        Value left = this.simplify();
+        Value right = value.simplify();
+        Order order = comparator.compare(left, right);
+        switch (order)
+        {
+            case LESSER:
+            {
+                return Tribool.TRUE;
+            }
+            case EQUAL:
+            case GREATER:
+            {
+                return Tribool.FALSE;
+            }
+            case UNKNOWN:
+            {
+                return Tribool.UNKNOWN;
+            }
+            default:
+            {
+                throw new IllegalStateException();
+            }
+        }
+    }
 
     public final Tribool gt(Value value)
     {
-        // Do not replace this with 'lt(value).invert()' as that is not the same for the ZERO case!
-        return value.lt(this);
+        Value left = this.simplify();
+        Value right = value.simplify();
+        Order order = comparator.compare(left, right);
+        switch (order)
+        {
+            case GREATER:
+            {
+                return Tribool.TRUE;
+            }
+            case EQUAL:
+            case LESSER:
+            {
+                return Tribool.FALSE;
+            }
+            case UNKNOWN:
+            {
+                return Tribool.UNKNOWN;
+            }
+            default:
+            {
+                throw new IllegalStateException();
+            }
+        }
     }
 
-    public final Tribool isStrictlyNegative()
+    public final Tribool isNegative()
     {
         return lt(ZERO);
     }
 
-    public final Tribool isStrictlyPositive()
+    public final Tribool isPositive()
     {
         return gt(ZERO);
     }
@@ -167,7 +231,7 @@ public abstract class Value
     public final Sign getSign()
     {
         Tribool b;
-        b = isStrictlyNegative();
+        b = isNegative();
         if (b.isUnknown())
         {
             return Sign.UNKNOWN;
@@ -176,7 +240,7 @@ public abstract class Value
         {
             return Sign.NEGATIVE;
         }
-        b = isStrictlyPositive();
+        b = isPositive();
         if (b.isUnknown())
         {
             return Sign.UNKNOWN;
@@ -199,6 +263,8 @@ public abstract class Value
     {
         return this instanceof IntegerValue;
     }
+
+    public abstract boolean isAtom();
 
     public final BigInteger asInteger()
     {

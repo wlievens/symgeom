@@ -32,6 +32,12 @@ public abstract class AbstractBinaryValue extends Value
         return String.format("(%s %s %s)", getOperator().getSymbol(), left.toPrefix(), right.toPrefix());
     }
 
+    @Override
+    public final boolean isAtom()
+    {
+        return false;
+    }
+
     public String toExpression(int precedence)
     {
         BinaryOperator operator = getOperator();
@@ -45,7 +51,6 @@ public abstract class AbstractBinaryValue extends Value
         );
     }
 
-    @Override
     public Tribool eqInternal(Value value)
     {
         value = value.simplify();
@@ -94,14 +99,6 @@ public abstract class AbstractBinaryValue extends Value
             return Tribool.TRUE;
         }
 
-        return Tribool.UNKNOWN;
-    }
-
-    @Override
-    public Tribool lt(Value value)
-    {
-        value = value.simplify();
-        System.out.println("No solution for AbstractBinaryValue.lt [" + this + "] < " + value);
         return Tribool.UNKNOWN;
     }
 

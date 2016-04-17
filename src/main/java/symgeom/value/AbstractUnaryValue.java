@@ -27,7 +27,12 @@ public abstract class AbstractUnaryValue extends Value
     }
 
     @Override
-    public Tribool eqInternal(Value value)
+    public final boolean isAtom()
+    {
+        return false;
+    }
+
+    public Tribool old_eqInternal(Value value)
     {
         Value other = value.simplify();
         if (value.getClass() == this.getClass())
@@ -38,12 +43,6 @@ public abstract class AbstractUnaryValue extends Value
                 return Tribool.TRUE;
             }
         }
-        return Tribool.UNKNOWN;
-    }
-
-    @Override
-    public Tribool lt(Value value)
-    {
         return Tribool.UNKNOWN;
     }
 

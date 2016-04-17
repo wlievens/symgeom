@@ -348,6 +348,38 @@ public class TestSimplifier
         verify(reference, input);
     }
 
+    @Test
+    public void test043()
+    {
+        Value input = PI.power(ONE);
+        Value reference = PI;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test044()
+    {
+        Value input = number(-37).sign();
+        Value reference = number(-1);
+        verify(reference, input);
+    }
+
+    @Test
+    public void test045()
+    {
+        Value input = PI.sign();
+        Value reference = ONE;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test046()
+    {
+        Value input = ZERO.sqrt();
+        Value reference = ZERO;
+        verify(reference, input);
+    }
+
     private void verify(Value reference, Value input)
     {
         Value output = simplifier.simplify(input);

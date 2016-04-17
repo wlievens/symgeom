@@ -10,14 +10,13 @@ public final class NegateValue extends AbstractUnaryValue
         super(operand);
     }
 
-    @Override
-    public Tribool lt(Value value)
+    public Tribool old_lt(Value value)
     {
         value = value.simplify();
         if (value.isZero().isTrue())
         {
             // -A < 0  ->  TRUE if A>0
-            if (getOperand().isStrictlyPositive().isTrue())
+            if (getOperand().isPositive().isTrue())
             {
                 return Tribool.TRUE;
             }

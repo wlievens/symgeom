@@ -11,6 +11,7 @@ import symgeom.value.IntegerValue;
 import symgeom.value.MultiplyValue;
 import symgeom.value.NegateValue;
 import symgeom.value.PowerValue;
+import symgeom.value.SignValue;
 import symgeom.value.SinValue;
 import symgeom.value.SubtractValue;
 import symgeom.value.Value;
@@ -57,7 +58,7 @@ public class Simplifier
                 Method create = value.getClass().getMethod("create", Value.class, Value.class);
                 value = (Value)create.invoke(null, left, right);
             }
-            System.out.println("SIMPLIFY " + value.toPrefix());
+            // System.out.println("SIMPLIFY " + value.toPrefix());
             // Apply rules
             for (int index = 0; index < rules.size(); index++)
             {
@@ -68,9 +69,9 @@ public class Simplifier
                     Value result = rule.execute(value);
                     if (result != null)
                     {
-                        System.out.println("::: " + rule.getLabel());
-                        System.out.println("    value:  " + value.toPrefix());
-                        System.out.println("    result: " + result.toPrefix());
+                        // System.out.println("::: " + rule.getLabel());
+                        // System.out.println("    value:  " + value.toPrefix());
+                        // System.out.println("    result: " + result.toPrefix());
                         if (!result.equals(value))
                         {
                             // Start simplification again
@@ -80,7 +81,7 @@ public class Simplifier
                     }
                 }
             }
-            System.out.println("<-- " + value);
+            // System.out.println("<-- " + value);
             return value;
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
@@ -325,6 +326,30 @@ public class Simplifier
                 (left, right) -> ((MultiplyValue)left).getLeft().power(right).multiply(((MultiplyValue)left).getRight().power(right))
         ));
         rules.add(SimplifyBinaryRule.create(
+                "0*A  ->  0",
+                value -> value instanceof MultiplyValue,
+                (left, right) -> left.equals(ZERO),
+                (left, right) -> ZERO
+        ));
+        rules.add(SimplifyBinaryRule.create(
+                "A*0  ->  0",
+                value -> value instanceof MultiplyValue,
+                (left, right) -> right.equals(ZERO),
+                (left, right) -> ZERO
+        ));
+        rules.add(SimplifyBinaryRule.create(
+                "0^A  ->  0",
+                value -> value instanceof PowerValue,
+                (left, right) -> left.equals(ZERO),
+                (left, right) -> ZERO
+        ));
+        rules.add(SimplifyBinaryRule.create(
+                "1^A  ->  1",
+                value -> value instanceof PowerValue,
+                (left, right) -> left.equals(ONE),
+                (left, right) -> ONE
+        ));
+        rules.add(SimplifyBinaryRule.create(
                 "Reduce number under square root",
                 value -> value instanceof PowerValue,
                 (left, right) -> left.isInteger() && left.asInteger().compareTo(BigInteger.ZERO) > 0 && right.equals(HALF),
@@ -410,6 +435,12 @@ public class Simplifier
                 value -> value instanceof NegateValue,
                 operand -> operand instanceof DivideValue,
                 operand -> ((DivideValue)operand).getLeft().negate().divide(((DivideValue)operand).getRight())
+        ));
+        rules.add(SimplifyUnaryRule.create(
+                "sign(A)  ->  sign if known",
+                value -> value instanceof SignValue,
+                operand -> operand.getSign().isKnown(),
+                operand -> number(operand.getSign().toInteger())
         ));
 
         // Linear Expression after all other special forms

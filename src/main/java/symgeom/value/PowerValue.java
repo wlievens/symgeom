@@ -20,8 +20,7 @@ public final class PowerValue extends AbstractBinaryValue
         return super.toExpression(precedence);
     }
 
-    @Override
-    public Tribool lt(Value value)
+    public Tribool old_lt(Value value)
     {
         // A^B < C
         Value a = getLeft().simplify();

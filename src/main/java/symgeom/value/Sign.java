@@ -28,4 +28,27 @@ public enum Sign
     {
         return !isUnknown();
     }
+
+    public int toInteger()
+    {
+        switch (this)
+        {
+            case POSITIVE:
+            {
+                return +1;
+            }
+            case NEGATIVE:
+            {
+                return -1;
+            }
+            case ZERO:
+            {
+                return 0;
+            }
+            default:
+            {
+                throw new IllegalStateException();
+            }
+        }
+    }
 }
