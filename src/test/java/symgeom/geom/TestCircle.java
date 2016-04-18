@@ -5,9 +5,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import symgeom.geom.Circle;
-import symgeom.geom.Point;
-import symgeom.geom.Segment;
 import symgeom.value.Value;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -105,8 +102,8 @@ public class TestCircle
         List<Point> intersections = circle.intersections(segment);
         debug(circle, segment, intersections);
         assertEquals(2, intersections.size());
-        assertEquals("", intersections.get(0).toString());
-        assertEquals("", intersections.get(1).toString());
+        assertEquals("Point(x=1035 / 37 + (35 / 37) * sqrt(287), y=1745 / 37 + (-25 / 37) * sqrt(287))", intersections.get(0).toString());
+        assertEquals("Point(x=1035 / 37 + (-35 / 37) * sqrt(287), y=1745 / 37 + (25 / 37) * sqrt(287))", intersections.get(1).toString());
     }
 
     @Test
@@ -120,7 +117,7 @@ public class TestCircle
         assertEquals(1, intersections.size());
         assertEquals("Point(x=36 + 4 * sqrt(11), y=38 + 2 * sqrt(11))", intersections.get(0).toString());
     }
-
+    
     private void debug(Circle circle, Segment segment, List<Point> points)
     {
         try

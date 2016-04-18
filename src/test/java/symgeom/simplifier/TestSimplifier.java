@@ -380,6 +380,14 @@ public class TestSimplifier
         verify(reference, input);
     }
 
+    @Test
+    public void test047()
+    {
+        Value input = number(40).abs();
+        Value reference = number(40);
+        verify(reference, input);
+    }
+
     private void verify(Value reference, Value input)
     {
         Value output = simplifier.simplify(input);

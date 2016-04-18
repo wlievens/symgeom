@@ -1,6 +1,7 @@
 package symgeom.simplifier;
 
 import symgeom.linear.LinearExpressionBuilder;
+import symgeom.value.AbsValue;
 import symgeom.value.AbstractBinaryValue;
 import symgeom.value.AbstractConstantValue;
 import symgeom.value.AbstractUnaryValue;
@@ -441,6 +442,24 @@ public class Simplifier
                 value -> value instanceof SignValue,
                 operand -> operand.getSign().isKnown(),
                 operand -> number(operand.getSign().toInteger())
+        ));
+        rules.add(SimplifyUnaryRule.create(
+                "abs(0)  ->  0",
+                value -> value instanceof AbsValue,
+                operand -> operand.isZero().isTrue(),
+                operand -> ZERO
+        ));
+        rules.add(SimplifyUnaryRule.create(
+                "abs(A)  ->  A  if A positive",
+                value -> value instanceof AbsValue,
+                operand -> operand.isPositive().isTrue(),
+                operand -> operand
+        ));
+        rules.add(SimplifyUnaryRule.create(
+                "abs(A)  ->  -A  if A negative",
+                value -> value instanceof AbsValue,
+                operand -> operand.isNegative().isTrue(),
+                operand -> operand.negate()
         ));
 
         // Linear Expression after all other special forms

@@ -2,8 +2,6 @@ package symgeom.geom;
 
 import org.junit.Assert;
 import org.junit.Test;
-import symgeom.geom.Point;
-import symgeom.geom.Segment;
 import symgeom.value.Value;
 
 import java.util.Optional;

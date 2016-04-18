@@ -59,6 +59,11 @@ public class Comparator
                 (left, right) -> compare(right.divide(((MultiplyValue)left).getLeft()), ((MultiplyValue)left).getRight())
         ));
         rules.add(ComparatorRule.create(
+                "A+B vs C+D  ->  A-C vs D-B   if A and C numeric",
+                (left, right) -> left instanceof AddValue && right instanceof AddValue && ((AddValue)left).getLeft().isNumeric() && ((AddValue)right).getLeft().isNumeric(),
+                (left, right) -> compare(((AddValue)left).getLeft().subtract(((AddValue)right).getLeft()), ((AddValue)right).getRight().subtract(((AddValue)left).getRight()))
+        ));
+        rules.add(ComparatorRule.create(
                 "A/B vs C/D  ->  AD vs BC",
                 (left, right) -> left instanceof DivideValue || right instanceof DivideValue,
                 (left, right) -> {
