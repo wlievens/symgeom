@@ -320,10 +320,10 @@ public class TestSimplifier
     public void test039()
     {
         Value input = number(400).add(number(200).multiply(PI)).divide(number(30)).simplify();
-        Value reference = number(40).add(number(20).multiply(PI)).divide(number(3));
+        Value reference = fraction(40, 3).add(fraction(20, 3).multiply(PI));
         verify(reference, input);
     }
-
+    
     @Test
     public void test040()
     {

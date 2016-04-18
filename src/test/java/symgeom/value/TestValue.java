@@ -199,7 +199,7 @@ public class TestValue
     public void test023()
     {
         Value value = number(400).add(number(200).multiply(PI)).divide(number(30)).simplify();
-        assertEquals(number(40).add(number(20).multiply(PI)).divide(number(3)), value);
+        assertEquals(fraction(40, 3).add(fraction(20, 3).multiply(PI)), value);
     }
 
     @Test

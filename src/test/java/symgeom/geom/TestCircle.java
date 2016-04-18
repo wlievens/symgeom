@@ -117,7 +117,7 @@ public class TestCircle
         assertEquals(1, intersections.size());
         assertEquals("Point(x=36 + 4 * sqrt(11), y=38 + 2 * sqrt(11))", intersections.get(0).toString());
     }
-    
+
     private void debug(Circle circle, Segment segment, List<Point> points)
     {
         try
