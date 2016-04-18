@@ -57,6 +57,11 @@ public abstract class Value
         return PowerValue.create(this, number(2));
     }
 
+    public final Value cube()
+    {
+        return PowerValue.create(this, number(3));
+    }
+
     public final Value sqrt()
     {
         return PowerValue.create(this, HALF);

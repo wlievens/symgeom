@@ -83,4 +83,12 @@ public class GeomTestUtil
         DOMSource source = new DOMSource(document);
         transformer.transform(source, result);
     }
+
+    public static void createSvgQuadratic(Document document, Quadratic quadratic, double scale)
+    {
+        Element svgPath = document.createElement("path");
+        svgPath.setAttribute("d", "M " + svgXY(quadratic.getStart(), scale) + " Q " + svgXY(quadratic.getControl(), scale) + " " + svgXY(quadratic.getEnd(), scale));
+        svgPath.setAttribute("style", "stroke-width: 1; stroke: blue; fill: none;");
+        document.getDocumentElement().appendChild(svgPath);
+    }
 }

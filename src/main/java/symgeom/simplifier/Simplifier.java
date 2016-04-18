@@ -78,7 +78,7 @@ public class Simplifier
         {
             if (rule.match(value))
             {
-                System.out.println(rule.getLabel());
+                // System.out.println(rule.getLabel());
                 Value result = rule.execute(value);
                 if (result != null && !result.equals(value))
                 {
@@ -87,7 +87,7 @@ public class Simplifier
             }
             else if (symmetric != null && rule.match(symmetric))
             {
-                System.out.println(rule.getLabel());
+                // System.out.println(rule.getLabel());
                 Value result = rule.execute(symmetric);
                 if (result != null && !result.equals(symmetric))
                 {
