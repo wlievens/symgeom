@@ -341,12 +341,6 @@ public class Simplifier
                 (left, right) -> ZERO
         ));
         rules.add(SimplifyBinaryRule.create(
-                "A*0  ->  0",
-                value -> value instanceof MultiplyValue,
-                (left, right) -> right.equals(ZERO),
-                (left, right) -> ZERO
-        ));
-        rules.add(SimplifyBinaryRule.create(
                 "0^A  ->  0",
                 value -> value instanceof PowerValue,
                 (left, right) -> left.equals(ZERO),
