@@ -468,6 +468,46 @@ public class TestSimplifier
         verify(reference, input);
     }
 
+    @Test
+    public void test058()
+    {
+        Value input = PI.divide(PI);
+        Value reference = ONE;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test059()
+    {
+        Value input = PI.divide(ONE);
+        Value reference = PI;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test060()
+    {
+        Value input = PI.multiply(ONE);
+        Value reference = PI;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test061()
+    {
+        Value input = fraction(-12, -60);
+        Value reference = fraction(1, 5);
+        verify(reference, input);
+    }
+
+    @Test
+    public void test062()
+    {
+        Value input = PI.multiply(number(3)).multiply(number(5));
+        Value reference = number(15).multiply(PI);
+        verify(reference, input);
+    }
+
     private void verify(Value reference, Value input)
     {
         Value output = simplifier.simplify(input);

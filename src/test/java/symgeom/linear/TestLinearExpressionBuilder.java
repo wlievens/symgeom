@@ -152,4 +152,13 @@ public class TestLinearExpressionBuilder
         assertEquals("Linear[6/1 {1 / pi}]", expression.toString());
         assertEquals("(/ 6 pi)", expression.toValue().toPrefix());
     }
+
+    @Test
+    public void testBuild020()
+    {
+        Value input = fraction(-1, -5);
+        LinearExpression expression = builder.build(input);
+        assertEquals("Linear[1/5 {1}]", expression.toString());
+        assertEquals("(/ 1 5)", expression.toValue().toPrefix());
+    }
 }

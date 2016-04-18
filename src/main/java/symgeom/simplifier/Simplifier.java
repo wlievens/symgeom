@@ -63,36 +63,6 @@ public class Simplifier
         return value;
     }
 
-    private Value createUnary(Class<? extends Value> type, Value operand)
-    {
-        try
-        {
-            Value value;
-            Method create = type.getMethod("create", Value.class);
-            value = (Value)create.invoke(null, operand);
-            return value;
-        }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
-        {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private Value createBinary(Class<? extends Value> type, Value left, Value right)
-    {
-        try
-        {
-            Value value;
-            Method create = type.getMethod("create", Value.class, Value.class);
-            value = (Value)create.invoke(null, left, right);
-            return value;
-        }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
-        {
-            throw new IllegalStateException(e);
-        }
-    }
-
     private Value applyRules(Value value)
     {
         Value symmetric = null;
@@ -128,6 +98,36 @@ public class Simplifier
         return value;
     }
 
+    private Value createUnary(Class<? extends Value> type, Value operand)
+    {
+        try
+        {
+            Value value;
+            Method create = type.getMethod("create", Value.class);
+            value = (Value)create.invoke(null, operand);
+            return value;
+        }
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private Value createBinary(Class<? extends Value> type, Value left, Value right)
+    {
+        try
+        {
+            Value value;
+            Method create = type.getMethod("create", Value.class, Value.class);
+            value = (Value)create.invoke(null, left, right);
+            return value;
+        }
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
     private void setupRules()
     {
         // Neutral Addition
@@ -144,12 +144,6 @@ public class Simplifier
                 value -> value instanceof MultiplyValue,
                 (left, right) -> right.equals(ONE),
                 (left, right) -> left
-        ));
-        rules.add(SimplifyBinaryRule.create(
-                "1*B  ->  B",
-                value -> value instanceof MultiplyValue,
-                (left, right) -> left.equals(ONE),
-                (left, right) -> right
         ));
 
         // Neutral Exponentiation
@@ -168,16 +162,10 @@ public class Simplifier
 
         // Division Identity
         rules.add(SimplifyBinaryRule.create(
-                "A*A  ->  1",
+                "A/A  ->  1",
                 value -> value instanceof DivideValue,
                 (left, right) -> left.equals(right),
                 (left, right) -> ONE
-        ));
-        rules.add(SimplifyBinaryRule.create(
-                "1*B  ->  B",
-                value -> value instanceof MultiplyValue,
-                (left, right) -> left.equals(ONE),
-                (left, right) -> right
         ));
 
         // Integer Addition
@@ -213,19 +201,19 @@ public class Simplifier
                     BigInteger a = left.asInteger();
                     BigInteger b = right.asInteger();
                     BigInteger gcd = a.gcd(b);
-                    if (gcd.compareTo(BigInteger.ZERO) == -1)
+                    if (gcd.compareTo(BigInteger.ZERO) < -1)
                     {
                         gcd = gcd.negate();
+                    }
+                    if (gcd.equals(BigInteger.ONE))
+                    {
+                        return null;
                     }
                     BigInteger numerator = a.divide(gcd);
                     BigInteger denominator = b.divide(gcd);
                     if (denominator.equals(BigInteger.ONE))
                     {
                         return number(numerator);
-                    }
-                    if (gcd.equals(BigInteger.ONE))
-                    {
-                        return null;
                     }
                     return fraction(numerator, denominator);
                 }
@@ -256,17 +244,6 @@ public class Simplifier
                     Value b = ((MultiplyValue)right).getLeft();
                     Value c = ((MultiplyValue)right).getRight();
                     return number(a.asInteger().multiply(b.asInteger())).multiply(c);
-                }
-        ));
-        rules.add(SimplifyBinaryRule.create(
-                "(A*B)*C  ->  BC*A  if BC integer",
-                value -> value instanceof MultiplyValue,
-                (left, right) -> left instanceof MultiplyValue && right.isInteger() && ((MultiplyValue)left).getRight().isInteger(),
-                (left, right) -> {
-                    Value a = ((MultiplyValue)left).getLeft();
-                    Value b = ((MultiplyValue)left).getRight();
-                    Value c = right;
-                    return number(b.asInteger().multiply(c.asInteger())).multiply(a);
                 }
         ));
 
