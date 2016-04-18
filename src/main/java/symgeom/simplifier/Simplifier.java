@@ -37,58 +37,95 @@ public class Simplifier
 
     public Value simplify(Value value)
     {
+        // Ignore atomics
+        if (value instanceof AbstractConstantValue || value instanceof IntegerValue)
+        {
+            return value;
+        }
+        // Traverse Unaries
+        Class<? extends Value> type = value.getClass();
+        if (value instanceof AbstractUnaryValue)
+        {
+            Value operand = simplify(((AbstractUnaryValue)value).getOperand());
+            value = createUnary(type, operand);
+        }
+        // Traverse Binaries
+        if (value instanceof AbstractBinaryValue)
+        {
+            Value left = simplify(((AbstractBinaryValue)value).getLeft());
+            Value right = simplify(((AbstractBinaryValue)value).getRight());
+            value = createBinary(type, left, right);
+        }
+        // System.out.println("SIMPLIFY " + value.toPrefix());
+        // Apply rules
+        value = applyRules(value);
+        // System.out.println("<-- " + value);
+        return value;
+    }
+
+    private Value createUnary(Class<? extends Value> type, Value operand)
+    {
         try
         {
-            // Ignore atomics
-            if (value instanceof AbstractConstantValue || value instanceof IntegerValue)
-            {
-                return value;
-            }
-            // Traverse Unaries
-            if (value instanceof AbstractUnaryValue)
-            {
-                Value operand = simplify(((AbstractUnaryValue)value).getOperand());
-                Method create = value.getClass().getMethod("create", Value.class);
-                value = (Value)create.invoke(null, operand);
-            }
-            // Traverse Binaries
-            if (value instanceof AbstractBinaryValue)
-            {
-                Value left = simplify(((AbstractBinaryValue)value).getLeft());
-                Value right = simplify(((AbstractBinaryValue)value).getRight());
-                Method create = value.getClass().getMethod("create", Value.class, Value.class);
-                value = (Value)create.invoke(null, left, right);
-            }
-            // System.out.println("SIMPLIFY " + value.toPrefix());
-            // Apply rules
-            for (int index = 0; index < rules.size(); index++)
-            {
-                SimplifyRule rule = rules.get(index);
-                if (rule.match(value))
-                {
-                    // Apply the rule
-                    Value result = rule.execute(value);
-                    if (result != null)
-                    {
-                        // System.out.println("::: " + rule.getLabel());
-                        // System.out.println("    value:  " + value.toPrefix());
-                        // System.out.println("    result: " + result.toPrefix());
-                        if (!result.equals(value))
-                        {
-                            // Start simplification again
-                            value = simplify(result);
-                            break;
-                        }
-                    }
-                }
-            }
-            // System.out.println("<-- " + value);
+            Value value;
+            Method create = type.getMethod("create", Value.class);
+            value = (Value)create.invoke(null, operand);
             return value;
         }
         catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
             throw new IllegalStateException(e);
         }
+    }
+
+    private Value createBinary(Class<? extends Value> type, Value left, Value right)
+    {
+        try
+        {
+            Value value;
+            Method create = type.getMethod("create", Value.class, Value.class);
+            value = (Value)create.invoke(null, left, right);
+            return value;
+        }
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private Value applyRules(Value value)
+    {
+        Value symmetric = null;
+        if (value instanceof AbstractBinaryValue)
+        {
+            AbstractBinaryValue binary = (AbstractBinaryValue)value;
+            if (binary.getOperator().isCommutative())
+            {
+                symmetric = createBinary(binary.getClass(), binary.getRight(), binary.getLeft());
+            }
+        }
+        for (SimplifyRule rule : rules)
+        {
+            if (rule.match(value))
+            {
+                System.out.println(rule.getLabel());
+                Value result = rule.execute(value);
+                if (result != null && !result.equals(value))
+                {
+                    return simplify(result);
+                }
+            }
+            else if (symmetric != null && rule.match(symmetric))
+            {
+                System.out.println(rule.getLabel());
+                Value result = rule.execute(symmetric);
+                if (result != null && !result.equals(symmetric))
+                {
+                    return simplify(result);
+                }
+            }
+        }
+        return value;
     }
 
     private void setupRules()
@@ -99,12 +136,6 @@ public class Simplifier
                 value -> value instanceof AddValue,
                 (left, right) -> right.equals(ZERO),
                 (left, right) -> left
-        ));
-        rules.add(SimplifyBinaryRule.create(
-                "0+B  ->  B",
-                value -> value instanceof AddValue,
-                (left, right) -> left.equals(ZERO),
-                (left, right) -> right
         ));
 
         // Neutral Multiplication
@@ -343,12 +374,6 @@ public class Simplifier
                 value -> value instanceof PowerValue,
                 (left, right) -> left.equals(ZERO),
                 (left, right) -> ZERO
-        ));
-        rules.add(SimplifyBinaryRule.create(
-                "1^A  ->  1",
-                value -> value instanceof PowerValue,
-                (left, right) -> left.equals(ONE),
-                (left, right) -> ONE
         ));
         rules.add(SimplifyBinaryRule.create(
                 "Reduce number under square root",

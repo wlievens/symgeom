@@ -323,7 +323,7 @@ public class TestSimplifier
         Value reference = fraction(40, 3).add(fraction(20, 3).multiply(PI));
         verify(reference, input);
     }
-    
+
     @Test
     public void test040()
     {
@@ -385,6 +385,86 @@ public class TestSimplifier
     {
         Value input = number(40).abs();
         Value reference = number(40);
+        verify(reference, input);
+    }
+
+    @Test
+    public void test048()
+    {
+        Value input = number(0).abs();
+        Value reference = ZERO;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test049()
+    {
+        Value input = number(-40).abs();
+        Value reference = number(40);
+        verify(reference, input);
+    }
+
+    @Test
+    public void test050()
+    {
+        Value input = number(16).sqrt();
+        Value reference = number(4);
+        verify(reference, input);
+    }
+
+    @Test
+    public void test051()
+    {
+        Value input = number(7).power(ONE);
+        Value reference = number(7);
+        verify(reference, input);
+    }
+
+    @Test
+    public void test052()
+    {
+        Value input = ONE.power(number(7));
+        Value reference = ONE;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test053()
+    {
+        Value input = number(7).power(ZERO);
+        Value reference = ONE;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test054()
+    {
+        Value input = PI.multiply(ZERO);
+        Value reference = ZERO;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test055()
+    {
+        Value input = ZERO.multiply(PI);
+        Value reference = ZERO;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test056()
+    {
+        Value input = PI.add(ZERO);
+        Value reference = PI;
+        verify(reference, input);
+    }
+
+    @Test
+    public void test057()
+    {
+        Value input = ZERO.add(PI);
+        Value reference = PI;
         verify(reference, input);
     }
 

@@ -1,6 +1,7 @@
 package symgeom.linear;
 
 import lombok.RequiredArgsConstructor;
+import symgeom.value.DivideValue;
 import symgeom.value.NegateValue;
 import symgeom.value.Value;
 
@@ -63,6 +64,14 @@ public class LinearTerm
             if (value.equals(Value.ONE))
             {
                 return numerator;
+            }
+            if (value instanceof DivideValue)
+            {
+                DivideValue divide = (DivideValue)value;
+                if (divide.getLeft().equals(Value.ONE))
+                {
+                    return numerator.divide(divide.getRight());
+                }
             }
             return numerator.multiply(value);
         }
