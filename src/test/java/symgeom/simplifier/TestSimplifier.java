@@ -508,6 +508,14 @@ public class TestSimplifier
         verify(reference, input);
     }
 
+    @Test
+    public void test063()
+    {
+        Value input = number(-118).divide(number(103)).square();
+        Value reference = fraction(13924, 10609);
+        verify(reference, input);
+    }
+
     private void verify(Value reference, Value input)
     {
         Value output = simplifier.simplify(input);

@@ -301,6 +301,12 @@ public class Simplifier
                 (left, right) -> right instanceof DivideValue,
                 (left, right) -> left.multiply(((DivideValue)right).getRight()).divide(((DivideValue)right).getLeft())
         ));
+        rules.add(SimplifyBinaryRule.create(
+                "(A/B)^C  ->  (A^C)/(B^C)  if A and B and C integer",
+                value -> value instanceof PowerValue,
+                (left, right) -> left.isFraction() && right.isInteger(),
+                (left, right) -> ((DivideValue)left).getLeft().power(right).divide(((DivideValue)left).getRight().power(right))
+        ));
 
         rules.add(SimplifyBinaryRule.create(
                 "A*(-B)  ->  -A*B",
