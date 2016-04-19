@@ -31,8 +31,8 @@ public class TestQuadratic
         List<Point> intersections = quadratic.intersections(segment);
         debug(quadratic, segment, intersections);
         assertEquals(2, intersections.size());
-        assertEquals("", intersections.get(0).toString());
-        assertEquals("", intersections.get(1).toString());
+        assertEquals("Point(x=50 * (44 / 103 + (-1 / 2) * sqrt(6508 / 10609)) ^ 2 + (10 * ((88 / 103 + -(sqrt(6508 / 10609))) * (59 / 103 + sqrt(6508 / 10609) / 2)) + 50 * (59 / 103 + sqrt(6508 / 10609) / 2) ^ 2), y=20 * (44 / 103 + (-1 / 2) * sqrt(6508 / 10609)) ^ 2 + (30 * ((88 / 103 + -(sqrt(6508 / 10609))) * (59 / 103 + sqrt(6508 / 10609) / 2)) + 70 * (59 / 103 + sqrt(6508 / 10609) / 2) ^ 2))", intersections.get(0).toString());
+        assertEquals("Point(x=50 * (44 / 103 + sqrt(6508 / 10609) / 2) ^ 2 + (10 * ((88 / 103 + sqrt(6508 / 10609)) * (59 / 103 + (-1 / 2) * sqrt(6508 / 10609))) + 50 * (59 / 103 + (-1 / 2) * sqrt(6508 / 10609)) ^ 2), y=20 * (44 / 103 + sqrt(6508 / 10609) / 2) ^ 2 + (30 * ((88 / 103 + sqrt(6508 / 10609)) * (59 / 103 + (-1 / 2) * sqrt(6508 / 10609))) + 70 * (59 / 103 + (-1 / 2) * sqrt(6508 / 10609)) ^ 2))", intersections.get(1).toString());
     }
 
     private void debug(Quadratic quadratic, Segment segment, List<Point> points)
