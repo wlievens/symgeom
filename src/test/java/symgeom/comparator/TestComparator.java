@@ -99,6 +99,22 @@ public class TestComparator
         verify(Order.LESSER, value1, value2);
     }
 
+    @Test
+    public void test012()
+    {
+        Value value1 = fraction(59, 103).add(fraction(6508, 10609).sqrt().divide(number(2)));
+        Value value2 = ZERO;
+        verify(Order.GREATER, value1, value2);
+    }
+
+    @Test
+    public void test013()
+    {
+        Value value1 = fraction(59, 103).add(fraction(6508, 10609).sqrt().divide(number(2)));
+        Value value2 = ONE;
+        verify(Order.LESSER, value1, value2);
+    }
+
     private void verify(Order reference, Value value1, Value value2)
     {
         assertEquals(reference, comparator.compare(value1, value2));

@@ -124,4 +124,11 @@ public class Segment
     {
         return end.getY().subtract(start.getY()).simplify();
     }
+
+    public Point interpolate(Value root)
+    {
+        Value x = start.getX().add(root.multiply(getDeltaX()));
+        Value y = start.getY().add(root.multiply(getDeltaY()));
+        return new Point(x.simplify(), y.simplify());
+    }
 }

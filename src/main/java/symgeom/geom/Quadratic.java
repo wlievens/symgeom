@@ -8,10 +8,9 @@ import symgeom.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import static symgeom.value.Value.ONE;
-import static symgeom.value.Value.ZERO;
-import static symgeom.value.Value.number;
+import static symgeom.value.Value.*;
 
 @Getter
 @RequiredArgsConstructor
@@ -32,18 +31,18 @@ public class Quadratic
         Point a2 = segment.getEnd();
 
         Point normal = new Point(
-            a1.getY().subtract(a2.getY()).simplify(),
-            a2.getX().subtract(a1.getX()).simplify()
+                a1.getY().subtract(a2.getY()).simplify(),
+                a2.getX().subtract(a1.getX()).simplify()
         );
 
         Point c2 = new Point(
-            p1.getX().add(p2.getX().multiply(number(-2))).add(p3.getX()).simplify(),
-            p1.getY().add(p2.getY().multiply(number(-2))).add(p3.getY()).simplify()
+                p1.getX().add(p2.getX().multiply(number(-2))).add(p3.getX()).simplify(),
+                p1.getY().add(p2.getY().multiply(number(-2))).add(p3.getY()).simplify()
         );
 
         Point c1 = new Point(
-            p1.getX().multiply(number(-2)).add(p2.getX().multiply(number(2))).simplify(),
-            p1.getY().multiply(number(-2)).add(p2.getY().multiply(number(2))).simplify()
+                p1.getX().multiply(number(-2)).add(p2.getX().multiply(number(2))).simplify(),
+                p1.getY().multiply(number(-2)).add(p2.getY().multiply(number(2))).simplify()
         );
 
         Point c0 = p1;
@@ -84,9 +83,12 @@ public class Quadratic
             throw new IllegalStateException("NYI");
         }
 
-        for (Value root: roots)
+        List<Point> points = new ArrayList<>(roots.size());
+
+        for (Value root : roots)
         {
             System.out.println(root.approximate());
+            System.out.println("root: " + root);
             Tribool check = root.between(ZERO, ONE);
             if (check.isUnknown())
             {
@@ -94,42 +96,26 @@ public class Quadratic
             }
             if (check.isTrue())
             {
-                System.out.println(root);
+                points.add(interpolate(root));
             }
         }
 
-        /*
-        Value qx0 = p1.getX();
-        Value qx1 = p2.getX();
-        Value qx2 = p3.getX();
+        return points;
+    }
 
-        Value qy0 = p1.getY();
-        Value qy1 = p2.getY();
-        Value qy2 = p3.getY();
+    private Point interpolate(Value t)
+    {
+        Value x = interpolate(t, Point::getX);
+        Value y = interpolate(t, Point::getY);
+        return new Point(x.simplify(), y.simplify());
+    }
 
-        Value xa = qy0.subtract(number(2).multiply(qy1)).subtract(qy2);
-        Value xb = number(2).multiply(qy1.subtract(qy0));
-        Value xc = qy0;
-
-        xa = xa.simplify();
-        xb = xb.simplify();
-        xc = xc.simplify();
-
-        System.out.println(xa + "\t" + xb + "\t" + xc);
-
-        Value b4ac = xb.square().subtract(number(4).multiply(xa).multiply(xc)).sqrt();
-        Value xa2 = number(2).multiply(xa);
-        Value t1 = b4ac.subtract(xb).divide(xa2);
-        Value t2 = b4ac.negate().subtract(xb).divide(xa2);
-
-        System.out.println(t1);
-        System.out.println(t1.simplify());
-        System.out.println(t1.approximate());
-
-        System.out.println(t2);
-        System.out.println(t2.simplify());
-        System.out.println(t2.approximate());
-*/
-        return null;
+    private Value interpolate(Value t, Function<Point, Value> getter)
+    {
+        Value tm = Value.ONE.subtract(t);
+        Value p0 = getter.apply(start);
+        Value p1 = getter.apply(control);
+        Value p2 = getter.apply(end);
+        return tm.square().multiply(p0).add(number(2).multiply(tm).multiply(t).multiply(p1)).add(t.square().multiply(p2));
     }
 }

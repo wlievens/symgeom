@@ -30,7 +30,9 @@ public class TestQuadratic
         debug(quadratic, segment, Collections.emptyList());
         List<Point> intersections = quadratic.intersections(segment);
         debug(quadratic, segment, intersections);
-        assertEquals(0, intersections.size());
+        assertEquals(2, intersections.size());
+        assertEquals("", intersections.get(0).toString());
+        assertEquals("", intersections.get(1).toString());
     }
 
     private void debug(Quadratic quadratic, Segment segment, List<Point> points)

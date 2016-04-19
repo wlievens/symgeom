@@ -41,7 +41,9 @@ public class Util
     {
         int result = first;
         for (int other : others)
+        {
             result = gcd(result, other);
+        }
         return result;
     }
 
@@ -63,9 +65,19 @@ public class Util
     public static <T> Collector<T, ?, ImmutableList<T>> toImmutableList()
     {
         return Collector.of(
-            ImmutableList::builder,
-            ImmutableList.Builder::add,
-            (l, r) -> l.addAll(r.build()),
-            ImmutableList.Builder<T>::build);
+                ImmutableList::builder,
+                ImmutableList.Builder::add,
+                (l, r) -> l.addAll(r.build()),
+                ImmutableList.Builder<T>::build);
+    }
+
+    public static String repeat(String string, int count)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int n = 0; n < count; ++n)
+        {
+            builder.append(string);
+        }
+        return builder.toString();
     }
 }
